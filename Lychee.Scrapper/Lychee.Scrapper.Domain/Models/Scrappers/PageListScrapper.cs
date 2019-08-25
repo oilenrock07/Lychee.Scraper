@@ -1,8 +1,8 @@
-﻿using Lychee.Scrapper.Domain.Interfaces;
-using System;
+﻿using Fizzler.Systems.HtmlAgilityPack;
+using HtmlAgilityPack;
+using Lychee.Scrapper.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
@@ -10,10 +10,24 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
     public class PageListScrapper : BaseScrapper, IScrapper
     {
 
+        private HtmlNode _htmlNode;
+
+        public PageListScrapper()
+        {
+            
+        }
+
+        public PageListScrapper(HtmlNode node)
+        {
+            _htmlNode = node;
+        }
+
         public virtual PageListPagination PaginationSettings { get; set; }
 
         /// <summary>
-        /// XPath of the item we want to scrape
+        /// Selector of the item we want to scrape.
+        /// The repeating DIVs that contain the products
+        /// Example from Solutionists page list, this is the article
         /// </summary>
         public virtual string ItemXPath { get; set; }
 
@@ -28,5 +42,39 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         /// Set the property to wait for the content to load
         /// </summary>
         public virtual bool WaitForJavascriptToLoad { get; set; }
+
+        public override async Task<ResultCollection<ResultItemCollection>> Scrape()
+        {
+            if (_htmlNode == null)
+                _htmlNode = await LoadPage(Url);
+
+            var nodes = _htmlNode.QuerySelectorAll(ItemXPath).ToList();
+            var resultCollection = new ResultCollection<ResultItemCollection>();
+
+            if (nodes.Any())
+            {
+                foreach (var node in nodes)
+                {
+                    var key = "";
+                    var result = new List<ResultItem>();
+                    foreach (var item in Items)
+                    {
+                        if (item.MultipleValue)
+                            AddMultipleValues(node, item, result);
+                        else
+                        {
+                            var tempKey = AddSingleValue(node, item, result);
+                            if (item.IsIdentifier) key = tempKey;
+                        }
+                            
+                    }
+
+                    resultCollection.AddItem(key, result);
+                }
+            }
+
+            return resultCollection;
+        }
+
     }
 }

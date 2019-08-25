@@ -248,10 +248,13 @@
     <Compile Include="Interfaces\IScrapper.cs" />
     <Compile Include="Models\Exceptions\ScrapperException.cs" />
     <Compile Include="Models\Scrappers\BaseScrapper.cs" />
-    <Compile Include="Models\Scrappers\ItemXPath.cs" />
+    <Compile Include="Models\Scrappers\ItemSetting.cs" />
     <Compile Include="Models\Scrappers\PageDetailScrapper.cs" />
     <Compile Include="Models\Scrappers\PageListPagination.cs" />
     <Compile Include="Models\Scrappers\PageListScrapper.cs" />
+    <Compile Include="Models\Scrappers\ResultCollection.cs" />
+    <Compile Include="Models\Scrappers\ResultItemCollection.cs" />
+    <Compile Include="Models\Scrappers\ResultItem.cs" />
     <Compile Include="Models\Scrappers\SmartHtmlElements.cs" />
     <Compile Include="Models\Scrappers\SmartInstruction.cs" />
     <Compile Include="Models\Scrappers\SmartScrapper.cs" />
@@ -260,7 +263,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="chromium-77.0.3844.0.br" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

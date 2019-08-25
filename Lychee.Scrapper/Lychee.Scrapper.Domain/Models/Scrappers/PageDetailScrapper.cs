@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
-    public class PageDetailScrapper: BaseScrapper, IScrapper
+    public class PageDetailScrapper : BaseScrapper, IScrapper
     {
-
+        public override Task<ResultCollection<ResultItemCollection>> Scrape()
+        {
+            return null;
+        }
     }
 }

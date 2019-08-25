@@ -18,7 +18,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         public virtual Browser Browser { get; set; }
 
-        public async Task Scrape()
+        public override async Task<ResultCollection<ResultItemCollection>> Scrape()
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                     await Browser.CloseAsync();
             }
 
-
+            return null;
 
             //await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
             //var browser = await Puppeteer.LaunchAsync(new LaunchOptions
@@ -66,7 +66,6 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             //await page.WaitForSelectorAsync(".MT15");
             //var result = await page.MainFrame.GetContentAsync();
         }
-
 
         //protected virtual void 
     }
