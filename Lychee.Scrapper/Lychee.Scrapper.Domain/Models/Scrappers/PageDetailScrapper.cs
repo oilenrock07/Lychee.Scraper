@@ -1,9 +1,6 @@
 ﻿using Lychee.Scrapper.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
@@ -12,6 +9,10 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         public override Task<ResultCollection<ResultItemCollection>> Scrape()
         {
             return null;
+        }
+
+        public PageDetailScrapper(Logger logger) : base(logger)
+        {
         }
     }
 }

@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 Lychee.Scrapper/Lychee.Scrapper.Domain/chromium-77.0.3844.0.br
+Lychee.Scrapper/Lychee.Scrapper.Test/Logs/

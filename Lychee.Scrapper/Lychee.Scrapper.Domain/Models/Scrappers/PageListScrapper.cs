@@ -4,6 +4,8 @@ using Lychee.Scrapper.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
@@ -12,12 +14,11 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         private HtmlNode _htmlNode;
 
-        public PageListScrapper()
+        public PageListScrapper(Logger logger) : base(logger)
         {
-            
         }
 
-        public PageListScrapper(HtmlNode node)
+        public PageListScrapper(Logger logger, HtmlNode node) : base(logger)
         {
             _htmlNode = node;
         }
@@ -46,7 +47,11 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         public override async Task<ResultCollection<ResultItemCollection>> Scrape()
         {
             if (_htmlNode == null)
+            {
+                Logger.Information("Started Loading Page: {Url}", Url);
                 _htmlNode = await LoadPage(Url);
+                Logger.Information("Finished Loading Page {Url}", Url);
+            }
 
             var nodes = _htmlNode.QuerySelectorAll(ItemXPath).ToList();
             var resultCollection = new ResultCollection<ResultItemCollection>();

@@ -1,6 +1,8 @@
 ﻿using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
 using System;
+using System.Configuration;
+using Serilog;
 
 namespace Lychee.Scrapper.Domain
 {
@@ -15,12 +17,15 @@ namespace Lychee.Scrapper.Domain
 
         public IScrapper GetScrapper()
         {
-            if (String.Equals(_scrapper, "PAGE_LIST", StringComparison.InvariantCultureIgnoreCase))
-                return new PageListScrapper();
-            else if (String.Equals(_scrapper, "PAGE_LIST", StringComparison.InvariantCultureIgnoreCase))
-                return new PageDetailScrapper();
+            var loggingPath = ConfigurationManager.AppSettings["LoggingPath"];
+            var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
 
-            return new SmartScrapper();
+            if (String.Equals(_scrapper, "PAGE_LIST", StringComparison.InvariantCultureIgnoreCase))
+                return new PageListScrapper(logger);
+            if (String.Equals(_scrapper, "PAGE_LIST", StringComparison.InvariantCultureIgnoreCase))
+                return new PageDetailScrapper(logger);
+
+            return new SmartScrapper(logger);
         }
     }
 }

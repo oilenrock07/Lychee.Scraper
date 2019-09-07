@@ -3,12 +3,14 @@ using Lychee.Scrapper.Domain.Models.Scrappers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Moq;
+using Serilog;
 
 namespace Lychee.Scrapper.Test.MaxshopScrapper
 {
@@ -23,7 +25,9 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
         {
             //URL: https://www.maxshop.com/shop/tops/fashion-tops
             _htmlNode = LoadHtmlFromText();
-            _scrapper = new PageListScrapper(_htmlNode);
+            var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "Maxshop", "Log.txt");
+            var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
+            _scrapper = new PageListScrapper(logger, _htmlNode);
         }
 
         private HtmlNode LoadHtmlFromText()

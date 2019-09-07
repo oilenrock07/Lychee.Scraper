@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Models.Scrappers;
 using NUnit.Framework;
+using Serilog;
 
 namespace Lychee.Scrapper.Test.MightyApeScrapper
 {
@@ -20,7 +22,9 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
         {
             //URL: https://www.mightyape.co.nz/games/ps4/best-sellers
             _htmlNode = LoadHtmlFromText();
-            _scrapper = new PageListScrapper(_htmlNode);
+            var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "MightyApe", "Log.txt");
+            var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
+            _scrapper = new PageListScrapper(logger, _htmlNode);
         }
 
         [Test]

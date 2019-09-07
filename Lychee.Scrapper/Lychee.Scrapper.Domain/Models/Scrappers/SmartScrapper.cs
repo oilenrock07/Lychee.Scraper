@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
@@ -68,5 +70,8 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         }
 
         //protected virtual void 
+        public SmartScrapper(Logger logger) : base(logger)
+        {
+        }
     }
 }

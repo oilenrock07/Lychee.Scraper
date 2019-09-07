@@ -31,13 +31,13 @@ namespace Lychee.Scrapper.Console
 
         static async void SmartLoad()
         {
-            var smartSetting = new SmartScrapper
-            {
-                Url = "http://www.moneycontrol.com/india/fnoquote/acc/ACC"
-            };
+            //var smartSetting = new SmartScrapper
+            //{
+            //    Url = "http://www.moneycontrol.com/india/fnoquote/acc/ACC"
+            //};
 
-            var scrapper = new SmartScrapper();
-            scrapper.Scrape();
+            //var scrapper = new SmartScrapper();
+            //scrapper.Scrape();
         }
     }
 }
