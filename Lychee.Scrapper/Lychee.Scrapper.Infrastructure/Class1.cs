@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lychee.Scrapper.Repository
+namespace Lychee.Scrapper.Infrastructure
 {
     public class Class1
     {

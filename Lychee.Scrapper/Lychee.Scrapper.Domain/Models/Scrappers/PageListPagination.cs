@@ -8,7 +8,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
     public class PageListPagination
     {
-        public virtual string PaginationXPath { get; set; }
+        public virtual string PaginationSelector { get; set; }
 
         /// <summary>
         /// If the pagination has ... then it has indefinite pagination

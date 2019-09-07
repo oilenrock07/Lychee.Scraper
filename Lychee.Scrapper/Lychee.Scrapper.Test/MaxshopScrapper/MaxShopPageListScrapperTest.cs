@@ -90,6 +90,9 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
             //Assert
             Assert.That(products, Is.Not.Null);
             Assert.That(products, Is.All.Not.Null);
+            Assert.That(products.All(x => x.Items.Exists(y => y.Name == "ProductName" && !string.IsNullOrEmpty(y.Value.ToString()))), Is.True);
+            Assert.That(products.All(x => x.Items.Exists(y => y.Name == "Price" && !string.IsNullOrEmpty(y.Value.ToString()))), Is.True);
+            Assert.That(products.All(x => x.Items.Exists(y => y.Name == "Url" && !string.IsNullOrEmpty(y.Value.ToString()))), Is.True);
         }
     }
 }
