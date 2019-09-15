@@ -51,7 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ScrapperContextFactory.cs" />
+    <Compile Include="Interfaces\IColumnDefinitionRepository.cs" />
+    <Compile Include="Interfaces\IScrappedDataRepository.cs" />
+    <Compile Include="Repositories\ColumnDefinitionRepository.cs" />
+    <Compile Include="Repositories\ScrappedDataRepository.cs" />
     <Compile Include="Entities\ColumnDefinition.cs" />
     <Compile Include="Entities\RelatedData.cs" />
     <Compile Include="Entities\ScrappedData.cs" />

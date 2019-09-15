@@ -7,7 +7,8 @@ namespace Lychee.Scrapper.Repository.Entities
     public class RelatedData
     {
         public int RelatedDataId { get; set; }
-        public int ScrappedDataId { get; set; }
+        public int? ScrappedDataId { get; set; }
+
         public string Description { get; set; }
 
         //Strings
@@ -44,6 +45,8 @@ namespace Lychee.Scrapper.Repository.Entities
         public bool Bool3 { get; set; }
         public bool Bool4 { get; set; }
         public bool Bool5 { get; set; }
-       
+
+        public virtual ScrappedData ScrappedData { get; set; }
+
     }
 }

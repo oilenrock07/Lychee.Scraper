@@ -13,6 +13,12 @@ namespace Lychee.Scrapper.Repository
         public DbSet<ScrappedData> ScrappedData { get; set; }
         public DbSet<RelatedData> RelatedData { get; set; }
         public DbSet<ColumnDefinition> ColumnDefinitions { get; set; }
-        
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ScrappedData>()
+                .HasMany(x => x.RelatedData)
+                .WithOptional(x => x.ScrappedData);
+        }
     }
 }

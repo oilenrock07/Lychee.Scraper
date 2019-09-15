@@ -9,7 +9,7 @@ namespace Lychee.Scrapper.Repository.Repositories
     public class Repository<T> : IRepository<T> 
         where T: class
     {
-        private readonly bool _sharedContext;
+        private readonly bool _isTransaction;
         private readonly DbContext _context;
 
         private IDbSet<T> _dbset;
@@ -19,10 +19,10 @@ namespace Lychee.Scrapper.Repository.Repositories
             set => _dbset = value;
         }
 
-        public Repository(DbContext context, bool sharedContext = false)
+        public Repository(DbContext context, bool isTransaction = false)
         {
             _context = context;
-            _sharedContext = sharedContext;
+            _isTransaction = isTransaction;
         }
 
         public virtual T GetById(int id)
@@ -49,7 +49,7 @@ namespace Lychee.Scrapper.Repository.Repositories
         {
             DbSet.Add(entity);
 
-            if (!_sharedContext)
+            if (!_isTransaction)
                 _context.SaveChanges();
 
             return entity;
@@ -58,15 +58,20 @@ namespace Lychee.Scrapper.Repository.Repositories
         public virtual void Update(T entity)
         {
             DbSet.AddOrUpdate(entity);
-            if (!_sharedContext)
+            if (!_isTransaction)
                 _context.SaveChanges();
         }
 
         public virtual void Delete(T entity)
         {
             DbSet.Remove(entity);
-            if (!_sharedContext)
+            if (!_isTransaction)
                 _context.SaveChanges();
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

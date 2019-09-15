@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lychee.Scrapper.Repository.Entities
@@ -82,5 +83,6 @@ namespace Lychee.Scrapper.Repository.Entities
         public bool Bool9 { get; set; }
         public bool Bool10 { get; set; }
 
+        public virtual ICollection<RelatedData> RelatedData { get; set; }
     }
 }

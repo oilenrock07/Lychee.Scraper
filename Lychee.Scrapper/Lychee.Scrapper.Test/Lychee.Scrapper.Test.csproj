@@ -172,10 +172,6 @@
       <Project>{ecda56cd-6163-4a03-8e7d-175a6144c0e1}</Project>
       <Name>Lychee.Scrapper.Repository</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Lychee.Scrapper.Services\Lychee.Scrapper.Services.csproj">
-      <Project>{7c672e02-2e20-44ea-a243-3808dffdb199}</Project>
-      <Name>Lychee.Scrapper.Services</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MaxshopScrapper\maxshop_pagelist.txt">

@@ -9,6 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Lychee.Scrapper.Domain.Helpers;
+using Lychee.Scrapper.Domain.Services;
+using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Repository.Interfaces;
+using Lychee.Scrapper.Repository.Repositories;
 using Moq;
 using Serilog;
 
@@ -19,6 +24,7 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
     {
         private PageListScrapper _scrapper;
         private HtmlNode _htmlNode;
+        private IColumnDefinitionRepository _columnDefinitionRepository;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
@@ -28,6 +34,8 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "Maxshop", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
             _scrapper = new PageListScrapper(logger, _htmlNode);
+
+            _columnDefinitionRepository = new ColumnDefinitionRepository();
         }
 
         private HtmlNode LoadHtmlFromText()
@@ -36,6 +44,90 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
             doc.Load($"{Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory)}/debug/MaxShopScrapper/maxshop_pagelist.txt");
 
             return doc.DocumentNode;
+        }
+
+        [Test]
+        public void CanMapAndSaveResultCollectionToDb()
+        {
+            var products = new ResultCollection<ResultItemCollection>
+            {
+                new ResultItemCollection
+                {
+                    Items = new List<ResultItem>
+                    {
+                        new ResultItem
+                        {
+                            Name = "ProductName",
+                            Value = "Safeguard"
+                        },
+                        new ResultItem
+                        {
+                            Name = "Url",
+                            Value = "http://safeguard.com"
+                        },
+                        new ResultItem
+                        {
+                            Name = "Price",
+                            Value = "35"
+                        },
+                        new ResultItem
+                        {
+                            Name = "Image",
+                            Value = "Safeguard Image 1",
+                            IsMultiple = true
+                        },
+                        new ResultItem
+                        {
+                            Name = "Image",
+                            Value = "Safeguard Image 2",
+                            IsMultiple = true
+                        }
+                    },
+                    Key = "Safeguard"
+                },
+                new ResultItemCollection
+                {
+                    Items = new List<ResultItem>
+                    {
+                        new ResultItem
+                        {
+                            Name = "ProductName",
+                            Value = "Vaseline"
+                        },
+                        new ResultItem
+                        {
+                            Name = "Url",
+                            Value = "http://vaseline.com"
+                        },
+                        new ResultItem
+                        {
+                            Name = "Price",
+                            Value = "105"
+                        },
+                        new ResultItem
+                        {
+                            Name = "Image",
+                            Value = "Vaseline Image 1",
+                            IsMultiple = true
+                        },
+                        new ResultItem
+                        {
+                            Name = "Image",
+                            Value = "Vaseline Image 2",
+                            IsMultiple = true
+                        },
+                        new ResultItem
+                        {
+                            Name = "ColourSwatch",
+                            Value = "Yellow",
+                            IsMultiple = true
+                        }
+                    },
+                    Key = "Vaseline"
+                }
+            };
+            var resultCollectionService = new ResultCollectionService(new ColumnDefinitionRepository(), new ScrappedDataRepository());
+            resultCollectionService.SaveScrappedData(products);
         }
 
         [Test]

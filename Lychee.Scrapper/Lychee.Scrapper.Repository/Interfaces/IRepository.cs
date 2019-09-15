@@ -21,5 +21,10 @@ namespace Lychee.Scrapper.Repository.Interfaces
         void Update(T entity);
 
         void Delete(T entity);
+
+        /// <summary>
+        /// Explicitly save the changes
+        /// </summary>
+        void SaveChanges();
     }
 }

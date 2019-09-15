@@ -50,7 +50,8 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                         list.Add(new ResultItem
                         {
                             Name = item.Key,
-                            Value = value
+                            Value = value,
+                            IsMultiple = true
                         });
                     }
                     else
@@ -59,7 +60,8 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                         list.Add(new ResultItem
                         {
                             Name = item.Key,
-                            Value = !string.IsNullOrEmpty(value) ? value : item.DefaultValue
+                            Value = !string.IsNullOrEmpty(value) ? value : item.DefaultValue,
+                            IsMultiple = true
                         });
                     }
                         
