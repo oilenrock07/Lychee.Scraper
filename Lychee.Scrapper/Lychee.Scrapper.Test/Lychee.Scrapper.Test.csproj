@@ -156,6 +156,7 @@
     <Compile Include="MaxshopScrapper\MaxShopPageListScrapperTest.cs" />
     <Compile Include="MightyApeScrapper\MightyAppePageListScrapperTest.cs" />
     <Compile Include="RepositoryTest\AccessContextTest.cs" />
+    <Compile Include="ServiceTest\ResultCollectionServiceTest.cs" />
     <Compile Include="SmartScrapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

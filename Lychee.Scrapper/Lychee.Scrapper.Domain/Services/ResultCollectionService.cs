@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
@@ -11,16 +12,22 @@ namespace Lychee.Scrapper.Domain.Services
     {
         private readonly IColumnDefinitionRepository _columnDefinitionRepository;
         private readonly IScrappedDataRepository _scrappedDataRepository;
-
-        public ResultCollectionService(IColumnDefinitionRepository columnDefinitionRepository, IScrappedDataRepository scrappedDataRepository)
+        private readonly ISettingRepository _settingRepository;
+        public ResultCollectionService(IColumnDefinitionRepository columnDefinitionRepository, 
+            IScrappedDataRepository scrappedDataRepository, ISettingRepository settingRepository)
         {
             _columnDefinitionRepository = columnDefinitionRepository;
             _scrappedDataRepository = scrappedDataRepository;
+            _settingRepository = settingRepository;
         }
 
         public void SaveScrappedData(ResultCollection<ResultItemCollection> data)
         {
-            var columnDefinitions = _columnDefinitionRepository.GetAllColumnDefinitions();
+            _settingRepository.GetAllSettings();
+
+            var scrappedDataColumnDefinitions = _columnDefinitionRepository.GetAllScrappedDataColumnDefinitions();
+            var relatedDataColumnDefinitions = _columnDefinitionRepository.GetAllRelatedDataColumnDefinitions();
+
             var list = new List<ScrappedData>();
             foreach (var product in data)
             {
@@ -32,20 +39,29 @@ namespace Lychee.Scrapper.Domain.Services
                         if (scrappedData.RelatedData == null)
                             scrappedData.RelatedData = new List<RelatedData>();
 
-                        var relatedData = new RelatedData
+                        var insertMultipleRow = _settingRepository.GetSettingValue<bool>("Scrapping.RelatedData.IsMultipleRow");
+                        if (insertMultipleRow)
                         {
-                            Description = item.Name,
-                            String1 = item.Value.ToString()
-                        };
+                            var relatedData = new RelatedData
+                            {
+                                Description = item.Name,
+                                String1 = item.Value.ToString()
+                            };
 
-                        //if (columnDefinitions.TryGetValue((nameof(RelatedData), item.Name), out var value))
-                        //    RelatedDataHelper.SetValue(relatedData, value, item.Value);
+                            scrappedData.RelatedData.Add(relatedData);
+                        }
+                        else
+                        {
+                            if (!scrappedData.RelatedData.Any())
+                                scrappedData.RelatedData.Add(new RelatedData());
 
-                        scrappedData.RelatedData.Add(relatedData);
+                            var relatedData = scrappedData.RelatedData.First();
+                            RelatedDataHelper.SetValue(relatedData, item.Name, relatedDataColumnDefinitions, item.Value);
+                        }
                     }
                     else
                     {
-                        if (columnDefinitions.TryGetValue((nameof(ScrappedData), item.Name), out var value))
+                        if (scrappedDataColumnDefinitions.TryGetValue((nameof(ScrappedData), item.Name), out var value))
                             ScrappedDataHelper.SetValue(scrappedData, value, item.Value);
                     }
                 }

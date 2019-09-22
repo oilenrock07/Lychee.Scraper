@@ -24,7 +24,6 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
     {
         private PageListScrapper _scrapper;
         private HtmlNode _htmlNode;
-        private IColumnDefinitionRepository _columnDefinitionRepository;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
@@ -34,8 +33,6 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "Maxshop", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
             _scrapper = new PageListScrapper(logger, _htmlNode);
-
-            _columnDefinitionRepository = new ColumnDefinitionRepository();
         }
 
         private HtmlNode LoadHtmlFromText()
@@ -126,7 +123,7 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
                     Key = "Vaseline"
                 }
             };
-            var resultCollectionService = new ResultCollectionService(new ColumnDefinitionRepository(), new ScrappedDataRepository());
+            var resultCollectionService = new ResultCollectionService(new ColumnDefinitionRepository(), new ScrappedDataRepository(), new SettingRepository());
             resultCollectionService.SaveScrappedData(products);
         }
 

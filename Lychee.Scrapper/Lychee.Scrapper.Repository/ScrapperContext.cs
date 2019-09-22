@@ -7,12 +7,13 @@ namespace Lychee.Scrapper.Repository
     {
         public ScrapperContext() : base("Scrapper.ConnectionString.Access")
         {
-            
+            Database.SetInitializer(new ScrapperContextDataInitializer());
         }
 
         public DbSet<ScrappedData> ScrappedData { get; set; }
         public DbSet<RelatedData> RelatedData { get; set; }
         public DbSet<ColumnDefinition> ColumnDefinitions { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -20,5 +21,6 @@ namespace Lychee.Scrapper.Repository
                 .HasMany(x => x.RelatedData)
                 .WithOptional(x => x.ScrappedData);
         }
+
     }
 }

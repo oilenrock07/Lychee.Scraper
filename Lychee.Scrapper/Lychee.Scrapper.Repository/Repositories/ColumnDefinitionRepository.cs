@@ -7,18 +7,45 @@ namespace Lychee.Scrapper.Repository.Repositories
 {
     public class ColumnDefinitionRepository : IColumnDefinitionRepository
     {
-        public Dictionary<(string, string), string> GetAllColumnDefinitions()
+        /// <summary>
+        /// (tablename, definition), columnname
+        /// example. ("ScrappedData", "Image"), "String1"
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<(string, string), string> GetAllScrappedDataColumnDefinitions()
         {
             var result = new Dictionary<(string, string), string>();
             using (var context = new ScrapperContext())
             {
                 var repository = new Repository<ColumnDefinition>(context);
-                var columns = repository.GetAll().ToList();
+                var columns = repository.Find(x => x.TableName == nameof(ScrappedData)).ToList();
 
                 if (!columns.Any()) return result;
 
                 foreach (var column in columns)
                     result.Add((column.TableName, column.Definition), column.ColumnName);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// (tablename, columnname), definition
+        /// example. ("ScrappedData", "String1"), "Image"
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<(string, string), string> GetAllRelatedDataColumnDefinitions()
+        {
+            var result = new Dictionary<(string, string), string>();
+            using (var context = new ScrapperContext())
+            {
+                var repository = new Repository<ColumnDefinition>(context);
+                var columns = repository.Find(x => x.TableName == nameof(ScrappedData)).ToList();
+
+                if (!columns.Any()) return result;
+
+                foreach (var column in columns)
+                    result.Add((column.TableName, column.ColumnName), column.Definition);
             }
 
             return result;
