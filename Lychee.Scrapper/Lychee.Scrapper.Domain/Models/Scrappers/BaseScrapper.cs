@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Fizzler.Systems.HtmlAgilityPack;
+using Lychee.Scrapper.Repository.Interfaces;
 using Serilog;
 using Serilog.Core;
 
@@ -32,7 +33,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             if (document == null)
                 throw new ScrapperException("Invalid Url");
 
-            return document.DocumentNode;            
+            return document.DocumentNode;      
         }
 
         public abstract Task<ResultCollection<ResultItemCollection>> Scrape();

@@ -4,6 +4,7 @@ using Lychee.Scrapper.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Lychee.Scrapper.Repository.Interfaces;
 using Serilog;
 using Serilog.Core;
 
@@ -11,15 +12,18 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
     public class PageListScrapper : BaseScrapper, IScrapper
     {
+        private readonly ISettingRepository _settingRepository;
+        private readonly ILoggingService _logService;
 
         private HtmlNode _htmlNode;
 
-        public PageListScrapper(Logger logger) : base(logger)
+        public PageListScrapper(Logger logger, 
+            ISettingRepository settingRepository,
+            ILoggingService logService,
+            HtmlNode node = null) : base(logger)
         {
-        }
-
-        public PageListScrapper(Logger logger, HtmlNode node) : base(logger)
-        {
+            _settingRepository = settingRepository;
+            _logService = logService;
             _htmlNode = node;
         }
 
@@ -50,6 +54,16 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             {
                 Logger.Information("Started Loading Page: {Url}", Url);
                 _htmlNode = await LoadPage(Url);
+
+                if (_htmlNode != null &&
+                    _settingRepository.GetSettingValue<bool>("Scrapping.ScrapperSetting.LogDownloadedPage"))
+                {
+                    var path = _settingRepository.GetSettingValue<string>("Scrapping.ScrapperSetting.LogDownloadedPagePath");
+                    Logger.Information("Writing downloaded document from : {Url}", Url);
+                    _logService.LogHtmlDocument(_htmlNode, path, Url);
+                    Logger.Information("Finished writing the document");
+                }
+
                 Logger.Information("Finished Loading Page {Url}", Url);
             }
 

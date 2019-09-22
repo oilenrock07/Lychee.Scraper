@@ -8,6 +8,8 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lychee.Scrapper.Domain.Services;
+using Lychee.Scrapper.Repository.Repositories;
 using PuppeteerSharp;
 
 namespace Lychee.Scrapper.Test
@@ -20,7 +22,7 @@ namespace Lychee.Scrapper.Test
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            var scrapperFactory = new ScrapperFactory("SMART");
+            var scrapperFactory = new ScrapperFactory("SMART", new SettingRepository(), new LoggingService());
 
             _scrapper = scrapperFactory.GetScrapper() as SmartScrapper;
         }

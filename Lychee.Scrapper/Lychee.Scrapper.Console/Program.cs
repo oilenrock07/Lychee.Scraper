@@ -6,6 +6,8 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lychee.Scrapper.Domain.Services;
+using Lychee.Scrapper.Repository.Repositories;
 
 namespace Lychee.Scrapper.Console
 {
@@ -14,7 +16,10 @@ namespace Lychee.Scrapper.Console
         static void Main(string[] args)
         {
             var scrapperType = ConfigurationManager.AppSettings["ScrapperType"];
-            var scrapperFactory = new ScrapperFactory(scrapperType);
+            var settingRepository = new SettingRepository();
+            var loggingService = new LoggingService();
+
+            var scrapperFactory = new ScrapperFactory(scrapperType, settingRepository, loggingService);
 
             var scrapper = scrapperFactory.GetScrapper();
 

@@ -12,12 +12,12 @@ namespace Lychee.Scrapper.Repository.Repositories
 
         public ICollection<Setting> GetAllSettings()
         {
+            if (_settings != null) return _settings;
             using (var context = new ScrapperContext())
             {
                 var repository = new Repository<Setting>(context, true);
                 _settings = repository.GetAll().ToList();
             }
-
             return _settings;
         }
 

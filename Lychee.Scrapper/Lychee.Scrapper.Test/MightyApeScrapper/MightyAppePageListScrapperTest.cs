@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Models.Scrappers;
+using Lychee.Scrapper.Domain.Services;
+using Lychee.Scrapper.Repository.Repositories;
 using NUnit.Framework;
 using Serilog;
 
@@ -24,7 +26,7 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
             _htmlNode = LoadHtmlFromText();
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "MightyApe", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-            _scrapper = new PageListScrapper(logger, _htmlNode);
+            _scrapper = new PageListScrapper(logger, new SettingRepository(), new LoggingService(), _htmlNode);
         }
 
         [Test]

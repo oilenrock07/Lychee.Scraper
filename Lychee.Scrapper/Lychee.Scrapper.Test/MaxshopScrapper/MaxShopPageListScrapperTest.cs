@@ -32,7 +32,7 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
             _htmlNode = LoadHtmlFromText();
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "Maxshop", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-            _scrapper = new PageListScrapper(logger, _htmlNode);
+            _scrapper = new PageListScrapper(logger, new SettingRepository(), new LoggingService(), _htmlNode);
         }
 
         private HtmlNode LoadHtmlFromText()
