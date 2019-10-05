@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Lychee.Scrapper.Domain.Services;
 using Lychee.Scrapper.Repository.Repositories;
+using Moq;
 using PuppeteerSharp;
 
 namespace Lychee.Scrapper.Test
@@ -18,13 +19,15 @@ namespace Lychee.Scrapper.Test
     public class SmartScrapperTest
     {
         private SmartScrapper _scrapper;
+        private Mock<ILoggingService> _loggingService;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            var scrapperFactory = new ScrapperFactory("SMART", new SettingRepository(), new LoggingService());
+            _loggingService = new Mock<ILoggingService>();
+            //var scrapperFactory = new ScrapperFactory("SMART", new SettingRepository(), new LoggingService());
 
-            _scrapper = scrapperFactory.GetScrapper() as SmartScrapper;
+            //_scrapper = scrapperFactory.GetScrapper() as SmartScrapper;
         }
 
         [Test]

@@ -26,7 +26,7 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
             _htmlNode = LoadHtmlFromText();
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "MightyApe", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-            _scrapper = new PageListScrapper(logger, new SettingRepository(), new LoggingService(), _htmlNode);
+            _scrapper = new PageListScrapper(new SettingRepository(), new LoggingService(logger), _htmlNode);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
             var doc = web.Load(url);
         }
 
-        private HtmlNode LoadHtmlFromText()
+        public static HtmlNode LoadHtmlFromText()
         {
             var doc = new HtmlDocument();
             doc.Load($"{Path.GetDirectoryName(TestContext.CurrentContext.TestDirectory)}/debug/MightyApeScrapper/mightyape_pagelist.txt");

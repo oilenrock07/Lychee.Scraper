@@ -11,7 +11,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             return null;
         }
 
-        public PageDetailScrapper(Logger logger) : base(logger)
+        public PageDetailScrapper(Logger logger)
         {
         }
     }

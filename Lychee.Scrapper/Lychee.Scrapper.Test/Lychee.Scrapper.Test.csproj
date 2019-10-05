@@ -154,9 +154,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MaxshopScrapper\MaxShopPageListScrapperTest.cs" />
+    <Compile Include="MyMoviesScrapper\MyMoviesScrapperTest.cs" />
     <Compile Include="MightyApeScrapper\MightyAppePageListScrapperTest.cs" />
     <Compile Include="RepositoryTest\AccessContextTest.cs" />
+    <Compile Include="ScrappedDataRepositoryMock.cs" />
+    <Compile Include="Scrapper\PageListScrapperTest.cs" />
     <Compile Include="ServiceTest\LoggingServiceTest.cs" />
+    <Compile Include="ServiceTest\PageListScrapperServiceTest.cs" />
+    <Compile Include="ServiceTest\PageListScrapperService_Pagination_Test.cs" />
     <Compile Include="ServiceTest\ResultCollectionServiceTest.cs" />
     <Compile Include="SmartScrapperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -185,7 +190,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

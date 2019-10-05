@@ -23,8 +23,6 @@ namespace Lychee.Scrapper.Domain.Services
 
         public void SaveScrappedData(ResultCollection<ResultItemCollection> data)
         {
-            _settingRepository.GetAllSettings();
-
             var scrappedDataColumnDefinitions = _columnDefinitionRepository.GetAllScrappedDataColumnDefinitions();
             var relatedDataColumnDefinitions = _columnDefinitionRepository.GetAllRelatedDataColumnDefinitions();
 

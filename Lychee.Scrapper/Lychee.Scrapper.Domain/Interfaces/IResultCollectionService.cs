@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lychee.Scrapper.Domain.Models.Scrappers;
 
 namespace Lychee.Scrapper.Domain.Interfaces
 {
     public interface IResultCollectionService
     {
+        void SaveScrappedData(ResultCollection<ResultItemCollection> data);
     }
 }

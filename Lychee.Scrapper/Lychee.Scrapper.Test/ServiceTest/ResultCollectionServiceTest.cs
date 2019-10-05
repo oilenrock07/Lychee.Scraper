@@ -4,6 +4,7 @@ using Lychee.Scrapper.Domain.Models.Scrappers;
 using Lychee.Scrapper.Domain.Services;
 using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
+using Lychee.Scrapper.Test.RepositoryTest;
 using Moq;
 using NUnit.Framework;
 
@@ -106,16 +107,6 @@ namespace Lychee.Scrapper.Test.ServiceTest
             Assert.That(scrappedDataRepository.Data.Last().RelatedData.ElementAt(0).String1, Is.EqualTo("MassEffect2.jpg"));
             Assert.That(scrappedDataRepository.Data.Last().RelatedData.ElementAt(0).String12, Is.EqualTo("PS3"));
 
-        }
-    }
-
-    public class ScrappedDataRepositoryMock : IScrappedDataRepository
-    {
-        public List<ScrappedData> Data { get; set; }
-
-        public void SaveScrappedData(List<ScrappedData> data)
-        {
-            Data = data;
         }
     }
 }

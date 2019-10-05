@@ -1,29 +1,17 @@
-﻿using System;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Models.Exceptions;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Fizzler.Systems.HtmlAgilityPack;
-using Lychee.Scrapper.Repository.Interfaces;
-using Serilog;
-using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
-    public abstract class BaseScrapper : IDisposable
+    public abstract class BaseScrapper
     {
-        public Logger Logger { get; set; }
-
         public virtual string Url { get; set; }
 
         public virtual List<ItemSetting> Items { get; set; }
-
-        protected BaseScrapper(Logger logger)
-        {
-            Logger = logger;
-        }
 
         public virtual async Task<HtmlNode> LoadPage(string url)
         {
@@ -118,11 +106,6 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                 throw new ScrapperException($"Value {item.Key} does not exists");
 
             return !string.IsNullOrEmpty(value) ? value : item.DefaultValue;
-        }
-
-        public void Dispose()
-        {
-            Logger?.Dispose();
         }
     }
 }

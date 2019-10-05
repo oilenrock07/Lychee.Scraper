@@ -70,7 +70,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         }
 
         //protected virtual void 
-        public SmartScrapper(Logger logger) : base(logger)
+        public SmartScrapper(Logger logger)
         {
         }
     }

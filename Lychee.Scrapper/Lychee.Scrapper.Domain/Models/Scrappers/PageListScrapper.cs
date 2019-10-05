@@ -17,10 +17,9 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         private HtmlNode _htmlNode;
 
-        public PageListScrapper(Logger logger, 
-            ISettingRepository settingRepository,
+        public PageListScrapper(ISettingRepository settingRepository,
             ILoggingService logService,
-            HtmlNode node = null) : base(logger)
+            HtmlNode node = null)
         {
             _settingRepository = settingRepository;
             _logService = logService;
@@ -50,22 +49,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         public override async Task<ResultCollection<ResultItemCollection>> Scrape()
         {
-            if (_htmlNode == null)
-            {
-                Logger.Information("Started Loading Page: {Url}", Url);
-                _htmlNode = await LoadPage(Url);
-
-                if (_htmlNode != null &&
-                    _settingRepository.GetSettingValue<bool>("Scrapping.ScrapperSetting.LogDownloadedPage"))
-                {
-                    var path = _settingRepository.GetSettingValue<string>("Scrapping.ScrapperSetting.LogDownloadedPagePath");
-                    Logger.Information("Writing downloaded document from : {Url}", Url);
-                    _logService.LogHtmlDocument(_htmlNode, path, Url);
-                    Logger.Information("Finished writing the document");
-                }
-
-                Logger.Information("Finished Loading Page {Url}", Url);
-            }
+            await PopulateHtmlNode();
 
             var nodes = _htmlNode.QuerySelectorAll(ItemXPath).ToList();
             var resultCollection = new ResultCollection<ResultItemCollection>();
@@ -93,6 +77,70 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             }
 
             return resultCollection;
+        }
+
+        public virtual HtmlNode GetLoadedHtmlNode()
+        {
+            return _htmlNode;
+        }
+
+        public virtual void Clone(PageListScrapper scrapper)
+        {
+            scrapper.ItemXPath = ItemXPath;
+            scrapper.LoadMoreOnSamePage = LoadMoreOnSamePage;
+            scrapper.WaitForJavascriptToLoad = WaitForJavascriptToLoad;
+            scrapper.Url = Url;
+            scrapper.Items = new List<ItemSetting>();
+
+            if (Items != null)
+            {
+                foreach (var itemSetting in Items)
+                {
+                    scrapper.Items.Add(new ItemSetting
+                    {
+                        Key = itemSetting.Key,
+                        AttributeName = itemSetting.AttributeName,
+                        DefaultValue = itemSetting.DefaultValue,
+                        EstimatedMultipleValueCount = itemSetting.EstimatedMultipleValueCount,
+                        IsIdentifier = itemSetting.IsIdentifier,
+                        MultipleValue = itemSetting.MultipleValue,
+                        Selector = itemSetting.Selector,
+                        ValueRequired = itemSetting.ValueRequired
+                    });
+                }
+            }
+
+            if (PaginationSettings != null)
+            {
+                scrapper.PaginationSettings = new PageListPagination
+                {
+                    CanHaveIndefinitePagination = PaginationSettings.CanHaveIndefinitePagination,
+                    NextPageXPath = PaginationSettings.NextPageXPath,
+                    PaginationSelector = PaginationSettings.PaginationSelector,
+                    ShowLastPagination = PaginationSettings.ShowLastPagination
+                };
+            }
+
+        }
+
+        protected async Task PopulateHtmlNode()
+        {
+            if (_htmlNode == null)
+            {
+                _logService.Logger.Information("Started Loading Page: {Url}", Url);
+                _htmlNode = await LoadPage(Url);
+
+                if (_htmlNode != null &&
+                    _settingRepository.GetSettingValue<bool>("Scrapping.ScrapperSetting.LogDownloadedPage"))
+                {
+                    var path = _settingRepository.GetSettingValue<string>("Scrapping.ScrapperSetting.LogDownloadedPagePath");
+                    _logService.Logger.Information("Writing downloaded document from : {Url}", Url);
+                    _logService.LogHtmlDocument(_htmlNode, path, Url);
+                    _logService.Logger.Information("Finished writing the document");
+                }
+
+                _logService.Logger.Information("Finished Loading Page {Url}", Url);
+            }
         }
 
     }

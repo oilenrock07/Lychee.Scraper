@@ -2,11 +2,19 @@
 using System.IO;
 using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Interfaces;
+using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Services
 {
-    public class LoggingService : ILoggingService
+    public class LoggingService : ILoggingService, IDisposable
     {
+        public Logger Logger { get; set; }
+
+        public LoggingService(Logger logger)
+        {
+            Logger = logger;
+        }
+
         public void LogHtmlDocument(HtmlNode node, string path, string url)
         {
             try
@@ -29,6 +37,11 @@ namespace Lychee.Scrapper.Domain.Services
             string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
 
             return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+        }
+
+        public void Dispose()
+        {
+            Logger?.Dispose();
         }
     }
 }
