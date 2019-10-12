@@ -1,0 +1,31 @@
+﻿<div class="row t2">
+    <div class="col-md-12">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Launch demo modal
+        </button>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $('#exampleModal').on('show.bs.modal', function (event) {
+            //var button = $(event.relatedTarget);
+            //var recipient = button.data('whatever');
+            var modal = $(this);
+            $.ajax({
+                url: '/Home/ModalData',
+                method: 'GET',
+                success: function (data) {
+                    modal.find('.modal-body').html(data);
+                }
+            });
+
+        
+            //modal.find('.modal-title').text('New message to ' + recipient);
+        })
+    </script>    
+}
+
+

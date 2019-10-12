@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Helpers;
+using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Services;
 using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
@@ -25,14 +26,17 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
         private PageListScrapper _scrapper;
         private HtmlNode _htmlNode;
 
+
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
             //URL: https://www.maxshop.com/shop/tops/fashion-tops
             _htmlNode = LoadHtmlFromText();
+
+            var webQueryService = new Mock<IWebQueryService>();
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "Maxshop", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-            _scrapper = new PageListScrapper(new SettingRepository(), new LoggingService(logger), _htmlNode);
+            _scrapper = new PageListScrapper(new SettingRepository(), new LoggingService(logger), webQueryService.Object);
         }
 
         private HtmlNode LoadHtmlFromText()
@@ -139,27 +143,27 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
         {
             //Arrange
             _scrapper.ItemXPath = ".js-productContent article";
-            _scrapper.Items = new List<ItemSetting>
+            _scrapper.Items = new List<ScrapeItemSetting>
             {
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "Url",
                     AttributeName = "href",
                     Selector = "a.js-imagehover"
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "ProductName",
                     Selector = "div:nth-child(2) a",
                     AttributeName = "title",
                     IsIdentifier = true
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "Price",
                     Selector = "div.price"
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "Image",
                     AttributeName = "src",
@@ -167,7 +171,7 @@ namespace Lychee.Scrapper.Test.MaxshopScrapper
                     Selector = "img",
                     MultipleValue = true
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "ColourSwatch",
                     AttributeName = "title",

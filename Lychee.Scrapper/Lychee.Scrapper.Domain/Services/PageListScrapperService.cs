@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Fizzler.Systems.HtmlAgilityPack;
@@ -10,28 +8,29 @@ using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
 using Lychee.Scrapper.Repository.Interfaces;
-using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Services
 {
-    public class PageListScrapperService : IScrapperService
+    public class PageListScrapperService : IScrapperService, IPageListScrapperService
     {
         private readonly ISettingRepository _settingRepository;
         private readonly PageListScrapper _scrapper;
         private readonly ILoggingService _loggingService;
         private readonly IResultCollectionService _resultCollectionService;
+        private readonly IWebQueryService _webQueryService;
 
         public PageListScrapperService(ISettingRepository settingRepository, PageListScrapper scrapper,
             ILoggingService loggingService,
-            IResultCollectionService resultCollectionService)
+            IResultCollectionService resultCollectionService, IWebQueryService webQueryService)
         {
             _settingRepository = settingRepository;
             _scrapper = scrapper;
             _loggingService = loggingService;
             _resultCollectionService = resultCollectionService;
+            _webQueryService = webQueryService;
         }
 
-        public async void Scrape()
+        public async Task Scrape()
         {
             //Loads the initial page
             var scrappedData = await _scrapper.Scrape();
@@ -53,7 +52,7 @@ namespace Lychee.Scrapper.Domain.Services
             
 
             //https://www.mightyape.co.nz/games/ps4/best-sellers?page=1
-            //Scrape the whole list? Scrapping.PageListScrapper.AutomaticallyScrapeAllInCategory
+            //Scrape the whole list? PageListScrapper.Strategy.AutomaticallyScrapeAllInCategory
 
 
             //This is only for scraping page with normal pagination.
@@ -96,7 +95,7 @@ namespace Lychee.Scrapper.Domain.Services
             {
                 _loggingService.Logger.Information("Trying to determine if first page from the Url");
 
-                var queryStringPageVariable = _settingRepository.GetSettingValue<string>("Scrapping.PageListScrapper.QueryStringPageVariable");
+                var queryStringPageVariable = _settingRepository.GetSettingValue<string>("PageListScrapper.URL.QueryStringPageVariable");
                 var uri = new Uri(_scrapper.Url);
                 var page = HttpUtility.ParseQueryString(uri.Query).Get(queryStringPageVariable);
 
@@ -133,7 +132,7 @@ namespace Lychee.Scrapper.Domain.Services
         public virtual int GetLastPageNumber(HtmlNode node)
         {
             //If the last page number is displayed at the pagination DOM. Example websites that show the last page are: https://www.glassons.com/clothing/tops, https://www.numberoneshoes.co.nz/womens
-            var isLastPageGiven = _settingRepository.GetSettingValue<bool>("Scrapping.PageListScrapper.PaginationIsLastPageGiven");
+            var isLastPageGiven = _settingRepository.GetSettingValue<bool>("PageListScrapper.Pagination.IsLastPageGiven");
             if (isLastPageGiven)
             {
                 return 1; //edit this
@@ -142,11 +141,11 @@ namespace Lychee.Scrapper.Domain.Services
             {
 
                 //if total product is given, we can compute the last page. Example sites are MightyApe
-                var totalProductIsGiven = _settingRepository.GetSettingValue<bool>("Scrapping.PageListScrapper.PaginationIsTotalNumberOfProductsGiven");
+                var totalProductIsGiven = _settingRepository.GetSettingValue<bool>("PageListScrapper.Pagination.IsTotalNumberOfProductsGiven");
                 if (totalProductIsGiven)
                 {
-                    var productsPerPage = _settingRepository.GetSettingValue<int>("Scrapping.PageListScrapper.PaginationProductsPerPage");
-                    var totalProductsSelector = _settingRepository.GetSettingValue<string>("Scrapping.PageListScrapper.PaginationTotalNumberOfProductsSelector");
+                    var productsPerPage = _settingRepository.GetSettingValue<int>("PageListScrapper.Pagination.ProductsPerPage");
+                    var totalProductsSelector = _settingRepository.GetSettingValue<string>("PageListScrapper.Pagination.TotalNumberOfProductsSelector");
                     var totalProducts = (node.QuerySelector(totalProductsSelector)?.InnerHtml ?? "0").ToInt();
                     if (productsPerPage > 0 && totalProducts > 0)
                     {
@@ -165,9 +164,10 @@ namespace Lychee.Scrapper.Domain.Services
         public virtual void ScrapeOtherPages(int lastPage, PageListScrapper firstPageScrapper)
         {
             var actions = new List<Action>();
-            for (var i = 1 + 1; i <= lastPage; i++)
+
+            for (var i = 2; i <= lastPage; i++)
             {
-                var scrapper = new PageListScrapper(_settingRepository, _loggingService);
+                var scrapper = new PageListScrapper(_settingRepository, _loggingService, _webQueryService);
                 firstPageScrapper.Clone(scrapper);
                 scrapper.Url = GetNextUrl(i, firstPageScrapper.Url);
 
@@ -181,7 +181,7 @@ namespace Lychee.Scrapper.Domain.Services
             //Invoke all the tasks
             try
             {
-                Parallel.Invoke(actions.ToArray());
+                Parallel.Invoke(new ParallelOptions { MaxDegreeOfParallelism = 8 }, actions.ToArray());
             }
             catch (AggregateException ex)
             {
@@ -207,7 +207,7 @@ namespace Lychee.Scrapper.Domain.Services
 
         private string GetNextUrlWithMapRoute(int page, string currentUrl)
         {
-            var queryStringPaginationRouteMap = _settingRepository.GetSettingValue<string>("Scrapping.URL.QueryStringPaginationRouteMap");
+            var queryStringPaginationRouteMap = _settingRepository.GetSettingValue<string>("PageListScrapper.Pagination.QueryStringRouteMap");
 
             if (string.IsNullOrEmpty(queryStringPaginationRouteMap))
             {

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Lychee.Scrapper.Repository.Entities.ScrapeSetting>
+@{
+    ViewBag.Title = "Scrape Settings";
+}
+
+<h2>Scrape Settings</h2>
+<table class="table table-hover table-responsive table-striped">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Items Count</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Category</td>
+            <td>@item.ScrapeItemSettings.Count</td>
+            <td>@Html.ActionLink("View", "ScrapeSettings", new {id = item.Category})</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,7 +1,13 @@
-﻿namespace Lychee.Scrapper.Domain.Models.Scrappers
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Lychee.Scrapper.Repository.Entities
 {
-    public class ItemSetting
+    public class ScrapeItemSetting
     {
+        [Key]
+        public int ScrapeItemSettingId { get; set; }
+
         /// <summary>
         /// If the key is the identifier of the row, then set this to true.
         /// Example: Key = Id/ProductName/GUID/Url
@@ -39,12 +45,6 @@
         /// </summary>
         public bool MultipleValue { get; set; }
 
-        /// <summary>
-        /// This is used for exporting the data to CSV.
-        /// This will become the header of your data
-        /// Example if the Images is expected to have multiple values and you set this to 3
-        /// The columns will be Image1, Image2, Image3
-        /// </summary>
-        public int EstimatedMultipleValueCount { get; set; }
+        public virtual ScrapeSetting ScrapeSetting { get; set; }
     }
 }

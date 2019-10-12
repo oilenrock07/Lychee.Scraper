@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
 using Lychee.Scrapper.Domain.Services;
@@ -15,22 +16,33 @@ namespace Lychee.Scrapper.Test.ServiceTest
     [TestFixture]
     public class PageListScrapperServiceTest : PageListScrapperService
     {
-        private static Mock<ISettingRepository> _settingRepository = new Mock<ISettingRepository>();
-        private static Mock<IResultCollectionService> _resultCollectionService = new Mock<IResultCollectionService>();
-        private static Mock<ILoggingService> _loggingService = new Mock<ILoggingService>();
-        private static Mock<IColumnDefinitionRepository> _columnDefinitionRepository = new Mock<IColumnDefinitionRepository>();
+        private static readonly Mock<ISettingRepository> _settingRepository = new Mock<ISettingRepository>();
+        private static readonly Mock<IResultCollectionService> _resultCollectionService = new Mock<IResultCollectionService>();
+        private static readonly Mock<ILoggingService> _loggingService = new Mock<ILoggingService>();
+        private static readonly Mock<IColumnDefinitionRepository> _columnDefinitionRepository = new Mock<IColumnDefinitionRepository>();
+        private static readonly Mock<IWebQueryService> _webQueryService = new Mock<IWebQueryService>();
 
         public PageListScrapperServiceTest() : base(_settingRepository.Object, null, _loggingService.Object,
-            _resultCollectionService.Object)
+            _resultCollectionService.Object, _webQueryService.Object)
         {
         }
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
+            var loggingPath = ConfigurationManager.AppSettings["LoggingPath"];
+            var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
+
+            _loggingService.Setup(x => x.Logger).Returns(logger);
+
             _settingRepository
-                .Setup(x => x.GetSettingValue<string>("Scrapping.PageListScrapper.QueryStringPageVariable"))
+                .Setup(x => x.GetSettingValue<string>("Scrapping.URL.QueryStringPageVariable"))
                 .Returns("page");
+
+            _settingRepository.Setup(x => x.GetSettingValue<bool>("Core.Logger.LogDownloadedPage")).Returns(false);
+            _settingRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.PageListScrapper.QueryStringMapRouted")).Returns(true);
+            _settingRepository.Setup(x => x.GetSettingValue<string>("PageListScrapper.Pagination.QueryStringRouteMap")).Returns("Movie/Index/");
+            _settingRepository.Setup(x => x.GetSettingValue<bool>("Core.Schema.IsMultipleRow")).Returns(false);
         }
 
         [Test]
@@ -64,7 +76,7 @@ namespace Lychee.Scrapper.Test.ServiceTest
                 .Setup(x => x.GetSettingValue<bool>("Scrapping.PageListScrapper.QueryStringMapRouted"))
                 .Returns(true);
             _settingRepository
-                .Setup(x => x.GetSettingValue<string>("Scrapping.URL.QueryStringPaginationRouteMap"))
+                .Setup(x => x.GetSettingValue<string>("PageListScrapper.Pagination.QueryStringRouteMap"))
                 .Returns(routeMap);
             
 
@@ -77,10 +89,6 @@ namespace Lychee.Scrapper.Test.ServiceTest
         public void CanLoadOtherPagesAsynchronously()
         {
             //Arrange
-            var loggingPath = ConfigurationManager.AppSettings["LoggingPath"];
-            var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-
-            _loggingService.Setup(x => x.Logger).Returns(logger);
             _columnDefinitionRepository
                 .Setup(x => x.GetAllScrappedDataColumnDefinitions())
                 .Returns(new Dictionary<(string, string), string>
@@ -88,25 +96,21 @@ namespace Lychee.Scrapper.Test.ServiceTest
                     {(nameof(ScrappedData), "MovieName"), "String1"}
                 });
 
-            var scrapper = new PageListScrapper(_settingRepository.Object, _loggingService.Object)
+            var scrapper = new PageListScrapper(_settingRepository.Object, _loggingService.Object, _webQueryService.Object)
             {
                 Url = "http://mymovies.localhost/",
                 ItemXPath = "#content .container .row:first-child .col-sm-6",
-                Items = new List<ItemSetting> {new ItemSetting {Key = "MovieName", Selector = "h3"}},
+                Items = new List<ScrapeItemSetting> {new ScrapeItemSetting {Key = "MovieName", Selector = "h3"}},
                 PaginationSettings = new PageListPagination
                 {
                     PaginationSelector = "ul.pagination"
                 }
             };
 
-            _settingRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.ScrapperSetting.LogDownloadedPage")).Returns(false);
-            _settingRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.PageListScrapper.QueryStringMapRouted")).Returns(true);
-            _settingRepository.Setup(x => x.GetSettingValue<string>("Scrapping.URL.QueryStringPaginationRouteMap")).Returns("Movie/Index/");
-            _settingRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.RelatedData.IsMultipleRow")).Returns(false);
-
+            
             var scrappedDataRepository = new ScrappedDataRepositoryMock();
             var resultCollectionService = new ResultCollectionService(_columnDefinitionRepository.Object, scrappedDataRepository, _settingRepository.Object);
-            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object, resultCollectionService);
+            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object, resultCollectionService, _webQueryService.Object);
 
 
             //Act
@@ -116,7 +120,64 @@ namespace Lychee.Scrapper.Test.ServiceTest
 
             //Assert
             Assert.That(scrappedDataRepository.Data.Count, Is.GreaterThan(0));
-            Assert.That(scrappedDataRepository.Data.Count, Is.EqualTo(150));
+            Assert.That(scrappedDataRepository.Data.Count, Is.EqualTo(2808));
+        }
+
+        [Test]
+        [Ignore("This is only to prove that async is faster than non-async. The difference is not much but since async is running first and non-async is getting all the cached request from async. Sometimes, nonasync is faster a few milliseconds")]
+        public async Task ProveThatLoadingPageAsynchronouslyIsFasterThanLoading1By1()
+        {
+            //Arrange
+            _columnDefinitionRepository
+                .Setup(x => x.GetAllScrappedDataColumnDefinitions())
+                .Returns(new Dictionary<(string, string), string>
+                {
+                    {(nameof(ScrappedData), "MovieName"), "String1"}
+                });
+
+            var scrapper = new PageListScrapper(_settingRepository.Object, _loggingService.Object, _webQueryService.Object)
+            {
+                Url = "http://mymovies.localhost/",
+                ItemXPath = "#content .container .row:first-child .col-sm-6",
+                Items = new List<ScrapeItemSetting> { new ScrapeItemSetting { Key = "MovieName", Selector = "h3" } },
+                PaginationSettings = new PageListPagination
+                {
+                    PaginationSelector = "ul.pagination"
+                }
+            };
+
+            var scrappedDataRepository = new ScrappedDataRepositoryMock();
+            var resultCollectionService = new ResultCollectionService(_columnDefinitionRepository.Object, scrappedDataRepository, _settingRepository.Object);
+            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object, resultCollectionService, _webQueryService.Object);
+
+
+            //Act
+            //Async
+            var startTime = DateTime.Now;
+            service.ScrapeOtherPages(58, scrapper);
+            var totalExecutionTime = DateTime.Now.Subtract(startTime);
+
+            //Non Async
+            var nonAsyncStartTime = DateTime.Now;
+            var resultCollection = new ResultCollection<ResultItemCollection>();
+
+            for (var i = 2; i <= 58; i++)
+            {
+                var newScrapper = new PageListScrapper(_settingRepository.Object, _loggingService.Object, _webQueryService.Object);
+                scrapper.Clone(newScrapper);
+                newScrapper.Url = GetNextUrl(i, "http://mymovies.localhost/");
+                var result = await newScrapper.Scrape();
+                resultCollection.AddRange(result);
+            }
+
+            var totalNonAsyncExecutionTime = DateTime.Now.Subtract(nonAsyncStartTime);
+
+            //Asserts
+            Assert.That(scrappedDataRepository.Data.Count, Is.GreaterThan(0));
+            Assert.That(scrappedDataRepository.Data.Count, Is.EqualTo(2808));
+            Assert.That(resultCollection.Count, Is.GreaterThan(0));
+            Assert.That(resultCollection.Count, Is.EqualTo(2808));
+            Assert.That(totalExecutionTime, Is.LessThan(totalNonAsyncExecutionTime));
         }
     }
 }

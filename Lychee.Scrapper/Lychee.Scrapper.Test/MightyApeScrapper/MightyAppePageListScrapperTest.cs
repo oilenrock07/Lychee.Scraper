@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Helpers;
+using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
 using Lychee.Scrapper.Domain.Services;
+using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Repositories;
+using Moq;
 using NUnit.Framework;
 using Serilog;
 
@@ -24,9 +27,11 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
         {
             //URL: https://www.mightyape.co.nz/games/ps4/best-sellers
             _htmlNode = LoadHtmlFromText();
+
+            var webQueryService = new Mock<IWebQueryService>();
             var loggingPath = Path.Combine(ConfigurationManager.AppSettings["LoggingPath"], "MightyApe", "Log.txt");
             var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-            _scrapper = new PageListScrapper(new SettingRepository(), new LoggingService(logger), _htmlNode);
+            _scrapper = new PageListScrapper(new SettingRepository(), new LoggingService(logger), webQueryService.Object, _htmlNode);
         }
 
         [Test]
@@ -57,26 +62,26 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
         {
             //Arrange
             _scrapper.ItemXPath = "div.product-list div.product";
-            _scrapper.Items = new List<ItemSetting>
+            _scrapper.Items = new List<ScrapeItemSetting>
             {
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "Url",
                     AttributeName = "href",
                     Selector = "div.details div.title a"
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "ProductName",
                     Selector = "div.details div.title a",
                     IsIdentifier = true
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "Price",
                     Selector = "div.product-price span.price"
                 },
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "Image",
                     AttributeName = "src",
@@ -106,9 +111,9 @@ namespace Lychee.Scrapper.Test.MightyApeScrapper
                 CanHaveIndefinitePagination = true,
                 PaginationSelector = "ul.pagination"
             };
-            _scrapper.Items = new List<ItemSetting>
+            _scrapper.Items = new List<ScrapeItemSetting>
             {
-                new ItemSetting
+                new ScrapeItemSetting
                 {
                     Key = "ProductName",
                     Selector = "div.details div.title a",

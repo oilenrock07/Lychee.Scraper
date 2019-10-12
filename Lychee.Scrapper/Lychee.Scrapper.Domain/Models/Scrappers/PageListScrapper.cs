@@ -4,9 +4,8 @@ using Lychee.Scrapper.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
-using Serilog;
-using Serilog.Core;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
@@ -19,7 +18,9 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         public PageListScrapper(ISettingRepository settingRepository,
             ILoggingService logService,
-            HtmlNode node = null)
+            IWebQueryService webQueryService,
+            HtmlNode node = null) 
+            : base (webQueryService)
         {
             _settingRepository = settingRepository;
             _logService = logService;
@@ -84,24 +85,41 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             return _htmlNode;
         }
 
+        /// <summary>
+        /// Clone only the properties that are native (string, int, bool)
+        /// If you want to copy all the complex properties like classes, use DeepClone
+        /// </summary>
+        /// <param name="scrapper"></param>
         public virtual void Clone(PageListScrapper scrapper)
         {
             scrapper.ItemXPath = ItemXPath;
             scrapper.LoadMoreOnSamePage = LoadMoreOnSamePage;
             scrapper.WaitForJavascriptToLoad = WaitForJavascriptToLoad;
             scrapper.Url = Url;
-            scrapper.Items = new List<ItemSetting>();
+
+            //Since this is not really that important to cloning. We could just reference to the existing object from the memory
+            scrapper.Items = Items;
+            scrapper.PaginationSettings = PaginationSettings;
+        }
+
+        /// <summary>
+        /// Clone all the properties of the class including the complex types
+        /// </summary>
+        /// <param name="scrapper"></param>
+        public virtual void DeepClone(PageListScrapper scrapper)
+        {
+            Clone(scrapper);
+            scrapper.Items = new List<ScrapeItemSetting>();
 
             if (Items != null)
             {
                 foreach (var itemSetting in Items)
                 {
-                    scrapper.Items.Add(new ItemSetting
+                    scrapper.Items.Add(new ScrapeItemSetting
                     {
                         Key = itemSetting.Key,
                         AttributeName = itemSetting.AttributeName,
                         DefaultValue = itemSetting.DefaultValue,
-                        EstimatedMultipleValueCount = itemSetting.EstimatedMultipleValueCount,
                         IsIdentifier = itemSetting.IsIdentifier,
                         MultipleValue = itemSetting.MultipleValue,
                         Selector = itemSetting.Selector,
@@ -120,7 +138,6 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                     ShowLastPagination = PaginationSettings.ShowLastPagination
                 };
             }
-
         }
 
         protected async Task PopulateHtmlNode()
@@ -131,9 +148,9 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                 _htmlNode = await LoadPage(Url);
 
                 if (_htmlNode != null &&
-                    _settingRepository.GetSettingValue<bool>("Scrapping.ScrapperSetting.LogDownloadedPage"))
+                    _settingRepository.GetSettingValue<bool>("Core.Logger.LogDownloadedPage"))
                 {
-                    var path = _settingRepository.GetSettingValue<string>("Scrapping.ScrapperSetting.LogDownloadedPagePath");
+                    var path = _settingRepository.GetSettingValue<string>("Core.Logger.LogDownloadedPagePath");
                     _logService.Logger.Information("Writing downloaded document from : {Url}", Url);
                     _logService.LogHtmlDocument(_htmlNode, path, Url);
                     _logService.Logger.Information("Finished writing the document");

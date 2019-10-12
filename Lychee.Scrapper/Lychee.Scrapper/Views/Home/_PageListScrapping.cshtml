@@ -1,0 +1,33 @@
+﻿
+<div class="col-md-6">
+    <h1>Setting Up Page List Scrapper</h1>
+    <p>There are a few things you wnt to observe first on the page list you want to scrape.</p>
+    
+    <h3>Pagination</h3>
+    <ol>
+        <li>
+            Is the URL Formatted/Routed? Example of formatted url is: <i>http://mymovies.localhost/Movie/Index/2</i>
+            <br />Depending on the url, you can set setting <span class="setting">Core.URL.IsQueryStringMapRouted</span> to true or false
+
+            <ul>
+                <li>
+                    If the url is <b>NOT</b> formatted/routed, then you need to specify the query string variable the site used for pagination.
+                    Normally it's just page or p. Default value saved in the database is <i>page</i> but you can change it from this setting <span class="setting">PageListScrapper.URL.QueryStringPageVariable</span>
+                </li>
+                <li>
+                    If however the url is formatted/routed, you can set the setting:
+                    <span class="setting">PageListScrapper.Pagination.QueryStringRouteMap</span>
+                    Most of the time keep this empty so the page number will just simply appended to the current url. Example <i>http://mymovies.localhost/Movie/Index/Category/Action</i> will become <i>http://mymovies.localhost/Movie/Index/Category/Action/2</i>. 
+                    Add the necessary url appender here. Example <i>http://mymovies.localhost/</i> and the appender is **Movie/Index**
+                </li>
+            </ul>
+        </li>
+        <li>
+            Is the last page given from the pagination? 
+            If the last page number is displayed at the pagination DOM. Example websites that show the last page are: <i>https://www.glassons.com/clothing/tops</i>, <i>https://www.numberoneshoes.co.nz/womens</i>
+            then it will be easier for the scrapper to get the last page.
+        </li>
+    </ol>
+</div>
+
+

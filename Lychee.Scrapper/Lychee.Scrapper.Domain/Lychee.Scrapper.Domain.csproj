@@ -262,6 +262,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\HeaderRequestType.cs" />
     <Compile Include="Enums\ScrapperType.cs" />
     <Compile Include="Helpers\CSVHelper.cs" />
     <Compile Include="Helpers\ObjectExtension.cs" />
@@ -269,12 +270,13 @@
     <Compile Include="Helpers\ScrappedDataHelper.cs" />
     <Compile Include="Interfaces\ILoggingService.cs" />
     <Compile Include="Interfaces\IPageListScrapperService.cs" />
+    <Compile Include="Interfaces\IScrapperService.cs" />
     <Compile Include="Interfaces\IResultCollectionService.cs" />
     <Compile Include="Interfaces\IScrapper.cs" />
     <Compile Include="Interfaces\IScrapperServiceFactory.cs" />
+    <Compile Include="Interfaces\IWebQueryService.cs" />
     <Compile Include="Models\Exceptions\ScrapperException.cs" />
     <Compile Include="Models\Scrappers\BaseScrapper.cs" />
-    <Compile Include="Models\Scrappers\ItemSetting.cs" />
     <Compile Include="Models\Scrappers\PageDetailScrapper.cs" />
     <Compile Include="Models\Scrappers\PageListPagination.cs" />
     <Compile Include="Models\Scrappers\PageListScrapper.cs" />
@@ -284,11 +286,14 @@
     <Compile Include="Models\Scrappers\SmartHtmlElements.cs" />
     <Compile Include="Models\Scrappers\SmartInstruction.cs" />
     <Compile Include="Models\Scrappers\SmartScrapper.cs" />
+    <Compile Include="Models\Web\WebQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LoggingService.cs" />
+    <Compile Include="Services\PageDetailScrapperService.cs" />
     <Compile Include="Services\PageListScrapperService.cs" />
     <Compile Include="Services\ResultCollectionService.cs" />
     <Compile Include="Services\ScrapperServiceFactory.cs" />
+    <Compile Include="Services\WebQueryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

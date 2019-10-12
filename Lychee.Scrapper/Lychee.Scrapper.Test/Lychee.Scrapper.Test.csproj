@@ -157,13 +157,17 @@
     <Compile Include="MyMoviesScrapper\MyMoviesScrapperTest.cs" />
     <Compile Include="MightyApeScrapper\MightyAppePageListScrapperTest.cs" />
     <Compile Include="RepositoryTest\AccessContextTest.cs" />
+    <Compile Include="RepositoryTest\ScrappedSettingRepositoryTest.cs" />
     <Compile Include="ScrappedDataRepositoryMock.cs" />
+    <Compile Include="Scrapper\PageDetailScrapperTest.cs" />
     <Compile Include="Scrapper\PageListScrapperTest.cs" />
+    <Compile Include="Scrapper\SmartScrapperTest.cs" />
     <Compile Include="ServiceTest\LoggingServiceTest.cs" />
+    <Compile Include="ServiceTest\PageDetailScrapperServiceTest.cs" />
     <Compile Include="ServiceTest\PageListScrapperServiceTest.cs" />
     <Compile Include="ServiceTest\PageListScrapperService_Pagination_Test.cs" />
     <Compile Include="ServiceTest\ResultCollectionServiceTest.cs" />
-    <Compile Include="SmartScrapperTest.cs" />
+    <Compile Include="ServiceTest\WebQueryServiceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

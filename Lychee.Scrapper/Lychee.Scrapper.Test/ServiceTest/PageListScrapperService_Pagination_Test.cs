@@ -25,12 +25,15 @@ namespace Lychee.Scrapper.Test.ServiceTest
         private Mock<PageListScrapper> _pageListScrapper;
         private Mock<ILoggingService> _loggingService;
         private Mock<IResultCollectionService> _resultCollectionService;
+        private Mock<IWebQueryService> _webQueryService;
 
         private Logger Logger;
+        
 
         private PageListScrapperService GetPageListScrapperService(PageListScrapper scrapper)
         {
-            return new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object, _resultCollectionService.Object );
+            return new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object,
+                _resultCollectionService.Object, _webQueryService.Object);
         }
 
         [OneTimeSetUp]
@@ -40,16 +43,19 @@ namespace Lychee.Scrapper.Test.ServiceTest
             _pageListScrapper = new Mock<PageListScrapper>();
             _loggingService = new Mock<ILoggingService>();
             _resultCollectionService = new Mock<IResultCollectionService>();
+            _webQueryService = new Mock<IWebQueryService>();
 
             var loggingPath = ConfigurationManager.AppSettings["LoggingPath"];
             Logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
+
+            _loggingService.Setup(x => x.Logger).Returns(Logger);
         }
 
         [Test, TestCaseSource(typeof(PageListScrapperTestData), "TestCases")]
         public void CanDetermineIfFirstPageFromUrl(PageListScrapper scrapper, bool isFirstPage)
         {
             //Arrange
-            _settingRepository.Setup(x => x.GetSettingValue<string>("Scrapping.PageListScrapper.QueryStringPageVariable")).Returns("page");
+            _settingRepository.Setup(x => x.GetSettingValue<string>("PageListScrapper.URL.QueryStringPageVariable")).Returns("page");
             var scrapperService = GetPageListScrapperService(scrapper);
 
             //Act
@@ -63,7 +69,7 @@ namespace Lychee.Scrapper.Test.ServiceTest
         public void CanDetermineIfFirstPageByLookingAtThePaginationDOM_ShouldPass()
         {
             //Arrange
-            var scrapper = new PageListScrapper(new SettingRepository(), _loggingService.Object, MightyAppePageListScrapperTest.LoadHtmlFromText())
+            var scrapper = new PageListScrapper(new SettingRepository(), _loggingService.Object, _webQueryService.Object, MightyAppePageListScrapperTest.LoadHtmlFromText())
             {
                 PaginationSettings = new PageListPagination {PaginationSelector = ".pagination li.active span"}
             };
@@ -81,7 +87,7 @@ namespace Lychee.Scrapper.Test.ServiceTest
         public void CanDetermineIfFirstPageByLookingAtThePaginationDOM_ShouldNOTPass_InvalidDOMPage()
         {
             //Arrange
-            var scrapper = new PageListScrapper(new SettingRepository(), _loggingService.Object, MightyAppePageListScrapperTest.LoadHtmlFromText())
+            var scrapper = new PageListScrapper(new SettingRepository(), _loggingService.Object, _webQueryService.Object, MightyAppePageListScrapperTest.LoadHtmlFromText())
             {
                 PaginationSettings = new PageListPagination { PaginationSelector = ".pagination li active span" }
             };
@@ -135,13 +141,13 @@ namespace Lychee.Scrapper.Test.ServiceTest
         public void CanGetTheLastPageNumberIfTotalProductIsGiven()
         {
             //Arrange
-            _settingRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.PageListScrapper.PaginationIsLastPageGiven")).Returns(false);
-            _settingRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.PageListScrapper.PaginationIsTotalNumberOfProductsGiven")).Returns(true);
-            _settingRepository.Setup(x => x.GetSettingValue<int>("Scrapping.PageListScrapper.PaginationProductsPerPage")).Returns(40);
-            _settingRepository.Setup(x => x.GetSettingValue<string>("Scrapping.PageListScrapper.PaginationTotalNumberOfProductsSelector")).Returns(".products .gallery-header .summary .results .total"); 
+            _settingRepository.Setup(x => x.GetSettingValue<bool>("PageListScrapper.Pagination.IsLastPageGiven")).Returns(false);
+            _settingRepository.Setup(x => x.GetSettingValue<bool>("PageListScrapper.Pagination.IsTotalNumberOfProductsGiven")).Returns(true);
+            _settingRepository.Setup(x => x.GetSettingValue<int>("PageListScrapper.Pagination.ProductsPerPage")).Returns(40);
+            _settingRepository.Setup(x => x.GetSettingValue<string>("PageListScrapper.Pagination.TotalNumberOfProductsSelector")).Returns(".products .gallery-header .summary .results .total"); 
 
 
-            var scrapper = new PageListScrapper(new SettingRepository(), _loggingService.Object, MightyAppePageListScrapperTest.LoadHtmlFromText())
+            var scrapper = new PageListScrapper(new SettingRepository(), _loggingService.Object, _webQueryService.Object, MightyAppePageListScrapperTest.LoadHtmlFromText())
             {
                 PaginationSettings = new PageListPagination { PaginationSelector = ".pagination li active span" }
             };
@@ -163,9 +169,9 @@ namespace Lychee.Scrapper.Test.ServiceTest
         {
             get
             {
-                yield return new object[] { new PageListScrapper(new SettingRepository(), new LoggingService(null)) { Url = "https://www.mightyape.co.nz/games/ps4/best-sellers" }, false};
-                yield return new object[] { new PageListScrapper(new SettingRepository(), new LoggingService(null)) { Url = "https://www.mightyape.co.nz/games/ps4/best-sellers?page=1" }, true };
-                yield return new object[] { new PageListScrapper(new SettingRepository(), new LoggingService(null)) { Url = "https://www.mightyape.co.nz/games/ps4/best-sellers?page=2" }, false };
+                yield return new object[] { new PageListScrapper(new SettingRepository(), new LoggingService(null), new WebQueryService(null)) { Url = "https://www.mightyape.co.nz/games/ps4/best-sellers" }, false};
+                yield return new object[] { new PageListScrapper(new SettingRepository(), new LoggingService(null), new WebQueryService(null)) { Url = "https://www.mightyape.co.nz/games/ps4/best-sellers?page=1" }, true };
+                yield return new object[] { new PageListScrapper(new SettingRepository(), new LoggingService(null), new WebQueryService(null)) { Url = "https://www.mightyape.co.nz/games/ps4/best-sellers?page=2" }, false };
             }
         }
     }

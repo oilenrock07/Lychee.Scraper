@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 
@@ -17,6 +19,7 @@ namespace Lychee.Scrapper.Test
         public void SaveScrappedData(List<ScrappedData> data)
         {
             Data.AddRange(data);
+            //Debug.Print(string.Join("\n", data.Select(x => x.String1)));
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         public int SettingId { get; set; }
 
-        //naming convention: Scrapping.RelatedData.IsMultipleRow
+        //naming convention: Core.Schema.IsMultipleRow
         public string Key { get; set; }
         public string Value { get; set; }
 

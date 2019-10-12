@@ -121,6 +121,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -137,6 +138,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Wiki\clear-data.png" />
+    <Content Include="Wiki\cookie.png" />
+    <Content Include="Wiki\cookie_table.png" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -162,6 +166,16 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Settings\ScrapeItemSettings.cshtml" />
+    <Content Include="Views\Settings\SystemSettings.cshtml" />
+    <Content Include="Views\Settings\ScrapeSettings.cshtml" />
+    <Content Include="Views\Home\_NewProject.cshtml" />
+    <Content Include="Views\Home\_PageListScrapping.cshtml" />
+    <Content Include="Views\Home\_Selectors.cshtml" />
+    <Content Include="Views\Home\_Cookies.cshtml" />
+    <Content Include="Views\Home\Data.cshtml" />
+    <Content Include="Views\Home\_ModalData.cshtml" />
+    <Content Include="Views\Shared\_Modal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -179,6 +193,16 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lychee.Scrapper.Domain\Lychee.Scrapper.Domain.csproj">
+      <Project>{48ece161-c497-499b-b1cb-66a0e5d5a811}</Project>
+      <Name>Lychee.Scrapper.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lychee.Scrapper.Repository\Lychee.Scrapper.Repository.csproj">
+      <Project>{ecda56cd-6163-4a03-8e7d-175a6144c0e1}</Project>
+      <Name>Lychee.Scrapper.Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

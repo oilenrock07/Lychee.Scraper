@@ -22,3 +22,31 @@ select,
 textarea {
     max-width: 280px;
 }
+
+h1 {
+    padding-top: 25px;
+    color: red;
+}
+
+.setting {
+    color: blue;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.red {
+    color: red;
+}
+
+
+.t1 {
+    padding-top: 10px;
+}
+
+.t2 {
+    padding-top: 20px;
+}
+
+img {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}

@@ -2,9 +2,8 @@
 
 namespace Lychee.Scrapper.Domain.Interfaces
 {
-    public interface IScrapperService
+    public interface IPageListScrapperService
     {
-        void Scrape();
         void ScrapeOtherPages(int lastPage, PageListScrapper firstPageScrapper);
     }
 }

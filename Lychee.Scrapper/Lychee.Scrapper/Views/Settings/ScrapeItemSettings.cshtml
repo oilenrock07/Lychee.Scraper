@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Lychee.Scrapper.Repository.Entities.ScrapeItemSetting>
+@{
+    ViewBag.Title = "Scrape Item Settings -" + ViewBag.Category;
+}
+
+<h2>ViewBag.Category</h2>
+<table class="table table-hover table-responsive table-striped">
+    <thead>
+        <tr>
+            <th>Is Identifier</th>
+            <th>Key</th>
+            <th>Selector</th>
+            <th>Attribute Name</th>
+            <th>Default Value</th>
+            <th>Value Required</th>
+            <th>Multiple Value</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var required = item.ValueRequired ? "checked=\"checked\"" : "";
+            var multipleValue = item.MultipleValue ? "checked=\"checked\"" : "";
+            var isIdentifier = item.IsIdentifier ? "checked=\"checked\"" : "";
+
+            <tr>
+                <td><input type="checkbox" @isIdentifier name="is-identifier" /></td>
+                <td><input type="text" class="form-control" name="key" value="@item.Key" /></td>
+                <td><input type="text" class="form-control" name="selector" value="@item.Selector" /></td>
+                <td><input type="text" class="form-control" name="attribute-name" value="@item.AttributeName" /></td>
+                <td><input type="text" class="form-control" name="default-value" value="@item.DefaultValue" /></td>
+                <td><input type="checkbox" @required name="value-required" /></td>
+                <td><input type="checkbox" @multipleValue name="multiple-value" /></td>
+                <td><input type="button" name="btn-update"/></td>
+            </tr>
+        }
+    </tbody>
+</table>

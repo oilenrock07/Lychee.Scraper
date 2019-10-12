@@ -15,6 +15,10 @@ namespace Lychee.Scrapper.Repository
         public DbSet<ColumnDefinition> ColumnDefinitions { get; set; }
         public DbSet<Setting> Settings { get; set; }
 
+        public DbSet<ScrapeSetting> ScrapeSettings { get; set; }
+        public DbSet<ScrapeItemSetting> ScrapeItemSettings { get; set; }
+        public DbSet<HeaderRequest> HeaderRequests { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ScrappedData>()

@@ -37,7 +37,7 @@ namespace Lychee.Scrapper.Domain.Services
                         if (scrappedData.RelatedData == null)
                             scrappedData.RelatedData = new List<RelatedData>();
 
-                        var insertMultipleRow = _settingRepository.GetSettingValue<bool>("Scrapping.RelatedData.IsMultipleRow");
+                        var insertMultipleRow = _settingRepository.GetSettingValue<bool>("Core.Schema.IsMultipleRow");
                         if (insertMultipleRow)
                         {
                             var relatedData = new RelatedData

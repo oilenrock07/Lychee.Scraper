@@ -49,7 +49,7 @@ namespace Lychee.Scrapper.Test.ServiceTest
                     {(nameof(RelatedData), "String15"), "Platform"}
                 });
 
-            settingDataRepository.Setup(x => x.GetSettingValue<bool>("Scrapping.RelatedData.IsMultipleRow")).Returns(false);
+            settingDataRepository.Setup(x => x.GetSettingValue<bool>("Core.Schema.IsMultipleRow")).Returns(false);
 
             var service = new ResultCollectionService(columnDefinitionRepository.Object, scrappedDataRepository, settingDataRepository.Object);
             var data = new ResultCollection<ResultItemCollection>

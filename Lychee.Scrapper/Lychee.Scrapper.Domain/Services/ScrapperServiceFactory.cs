@@ -20,13 +20,16 @@ namespace Lychee.Scrapper.Domain.Services
         private readonly ISettingRepository _settingRepository;
         private readonly ILoggingService _loggingService;
         private readonly IResultCollectionService _resultCollectionService;
+        private readonly IWebQueryService _webQueryService;
 
-        public ScrapperServiceFactory(string scrapper, ISettingRepository settingRepository, ILoggingService loggingService, IResultCollectionService resultCollectionService)
+        public ScrapperServiceFactory(string scrapper, ISettingRepository settingRepository,
+            ILoggingService loggingService, IResultCollectionService resultCollectionService, IWebQueryService webQueryService)
         {
             _scrapper = scrapper;
             _settingRepository = settingRepository;
             _loggingService = loggingService;
             _resultCollectionService = resultCollectionService;
+            _webQueryService = webQueryService;
         }
 
         public IScrapperService GetScrapper()
@@ -36,8 +39,8 @@ namespace Lychee.Scrapper.Domain.Services
 
             if (string.Equals(_scrapper, ScrapperType.PageList, StringComparison.InvariantCultureIgnoreCase))
             {
-                var scrapper = new PageListScrapper(_settingRepository, _loggingService);
-                return new PageListScrapperService(_settingRepository, scrapper, _loggingService, _resultCollectionService);
+                var scrapper = new PageListScrapper(_settingRepository, _loggingService, _webQueryService);
+                return new PageListScrapperService(_settingRepository, scrapper, _loggingService, _resultCollectionService, _webQueryService);
             }
                 
             throw new NotImplementedException();

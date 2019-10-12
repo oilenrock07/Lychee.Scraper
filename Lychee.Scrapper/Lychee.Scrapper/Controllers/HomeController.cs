@@ -31,5 +31,15 @@ namespace Lychee.Scrapper.Controllers
         {
             return Json(new List<string> { "Cornelio", "Jona" }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Data()
+        {
+            return View();
+        }
+
+        public PartialViewResult ModalData()
+        {
+            return PartialView("_ModalData");
+        }
     }
 }
