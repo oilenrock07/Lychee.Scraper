@@ -2,20 +2,23 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Wiki</h1>
-    <p class="lead">All the things you need to know about scrapping the website</p>
+<div class="index">
+    <div class="jumbotron">
+        <h1>Wiki</h1>
+        <p class="lead">All the things you need to know about scrapping the website</p>
+    </div>
+
+    <div class="row">
+        @Html.Partial("_NewProject")
+        @Html.Partial("_PageListScrapping")
+        @Html.Partial("_Selectors")
+    </div>
+
+    <div class="row">
+        @Html.Partial("_Cookies")
+    </div>
 </div>
 
-<div class="row">
-    @Html.Partial("_NewProject")
-    @Html.Partial("_PageListScrapping")
-    @Html.Partial("_Selectors")
-</div>
-
-<div class="row">
-    @Html.Partial("_Cookies")
-</div>
 
 @*<div id="Users">
 

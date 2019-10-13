@@ -136,8 +136,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\code-drag.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\ScrapperFunctions.js" />
     <Content Include="Wiki\clear-data.png" />
     <Content Include="Wiki\cookie.png" />
     <Content Include="Wiki\cookie_table.png" />

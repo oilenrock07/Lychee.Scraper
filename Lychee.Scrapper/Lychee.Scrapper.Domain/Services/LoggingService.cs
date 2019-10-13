@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Interfaces;
 using Serilog.Core;
+using Serilog.Events;
 
 namespace Lychee.Scrapper.Domain.Services
 {
@@ -15,7 +17,7 @@ namespace Lychee.Scrapper.Domain.Services
             Logger = logger;
         }
 
-        public void LogHtmlDocument(HtmlNode node, string path, string url)
+        public virtual void LogHtmlDocument(HtmlNode node, string path, string url)
         {
             try
             {
@@ -29,6 +31,17 @@ namespace Lychee.Scrapper.Domain.Services
             {
                 //do nothing
             }
+        }
+
+        public virtual void Log(LogEventLevel level, string message, bool logConsole = true)
+        {
+            if (logConsole)
+            {
+                Console.WriteLine(message);
+                Debug.WriteLine(message);
+            }
+            
+            Logger.Write(level, message);
         }
 
         public static string SanitizeFileName(string name)
