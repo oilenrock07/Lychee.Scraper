@@ -5,6 +5,73 @@
         </button>
     </div>
 </div>
+<div class="row t2">
+    <div class="col-md-12">
+        <input type="text" class="form-control" id="txtOnLoad" value="test"/>
+    </div>
+</div>
+
+<h1>Table Sample</h1>
+
+<div class="row t2">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Game Name</th>
+                <th>Price</th>
+                <th></th>
+                <th>Platform</th>
+                <th>Is Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Witcher 3</td>
+                <td><input type="text" value="700" readonly="readonly" class="form-control" /></td>
+                <td><img src="~/Images/code-drag.png" class="img-responsive" data-id="1" /></td>
+                <td>
+                    <select class="form-control">
+                        <option value="0" selected="selected">PS4</option>
+                        <option value="1">XBox1</option>
+                        <option value="2">PC</option>
+                    </select>
+                </td>
+                <td><input type="checkbox" checked="checked" /></td>
+                <td><a href="http://www.witcher3.com">View</a></td>
+            </tr>
+            <tr>
+                <td>Gear Of Wars</td>
+                <td><input type="text" value="500" readonly="readonly" class="form-control" /></td>
+                <td><img src="~/Images/code-drag.png" class="img-responsive" data-id="2" /></td>
+                <td>
+                    <select class="form-control">
+                        <option value="0">PS4</option>
+                        <option value="1" selected="selected">XBox1</option>
+                        <option value="2">PC</option>
+                    </select>
+                </td>
+                <td><input type="checkbox" checked="checked" /></td>
+                <td><a href="http://www.gearofwars.com">View</a></td>
+            </tr>
+            <tr>
+                <td>Dota 2</td>
+                <td><input type="text" value="0" readonly="readonly" class="form-control" /></td>
+                <td><img src="~/Images/code-drag.png" class="img-responsive" data-id="2" /></td>
+                <td>
+                    <select class="form-control">
+                        <option value="0">PS4</option>
+                        <option value="1">XBox1</option>
+                        <option value="2" selected="selected">PC</option>
+                    </select>
+                </td>
+                <td><input type="checkbox" /></td>
+                <td><a href="http://www.dota2.com">View</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
 
 
 @section scripts
@@ -24,7 +91,11 @@
 
         
             //modal.find('.modal-title').text('New message to ' + recipient);
-        })
+        });
+
+        $(document).ready(function() {
+            $('#txtOnLoad').val('Content Loaded On Page Load');
+        });
     </script>    
 }
 

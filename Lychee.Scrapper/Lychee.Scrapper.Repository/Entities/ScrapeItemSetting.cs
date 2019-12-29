@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lychee.Scrapper.Repository.Entities
 {
@@ -26,9 +25,16 @@ namespace Lychee.Scrapper.Repository.Entities
         public string Selector { get; set; }
 
         /// <summary>
-        /// If AttributeName is present, we try to parse it from attribute, otherwise we get the inner html
+        /// How we want to access the data we want to scrape. See enum ScrappingAccessor
+        /// Default accessor is InnerHtml
+        /// </summary>
+        public string Accessor { get; set; }
+
+        /// <summary>
+        /// If Accessor is by Attribute, then we use this property to set the attribute name we want to get
         /// </summary>
         public string AttributeName { get; set; }
+
 
         /// <summary>
         /// If value is not required you can specify the default value if parsed value is null or empty
@@ -45,6 +51,6 @@ namespace Lychee.Scrapper.Repository.Entities
         /// </summary>
         public bool MultipleValue { get; set; }
 
-        public virtual ScrapeSetting ScrapeSetting { get; set; }
+        //public virtual ScrapeSetting ScrapeSetting { get; set; }
     }
 }

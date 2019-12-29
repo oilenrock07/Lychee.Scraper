@@ -9,7 +9,7 @@ using Lychee.Scrapper.Repository.Interfaces;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {
-    public class PageListScrapper : BaseScrapper, IScrapper
+    public class PageListScrapper : BaseScrapper, IPageListScrapper
     {
         private readonly ISettingRepository _settingRepository;
         private readonly ILoggingService _logService;
@@ -70,7 +70,6 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                             var tempKey = AddSingleValue(node, item, result);
                             if (item.IsIdentifier) key = tempKey;
                         }
-                            
                     }
 
                     resultCollection.AddItem(key, result);
@@ -90,7 +89,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         /// If you want to copy all the complex properties like classes, use DeepClone
         /// </summary>
         /// <param name="scrapper"></param>
-        public virtual void Clone(PageListScrapper scrapper)
+        public virtual void Clone(IPageListScrapper scrapper)
         {
             scrapper.ItemXPath = ItemXPath;
             scrapper.LoadMoreOnSamePage = LoadMoreOnSamePage;

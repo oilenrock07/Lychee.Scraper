@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using System;
+using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Models.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,5 +136,14 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
             return !string.IsNullOrEmpty(value) ? value : scrapeItem.DefaultValue;
         }
+
+        //protected virtual string GetByValue(HtmlNode itemNode, ScrapeItemSetting scrapeItem)
+        //{
+        //    var value = itemNode;
+        //    if (scrapeItem.ValueRequired && string.IsNullOrEmpty(value))
+        //        throw new ScrapperException($"Value {scrapeItem.Key} does not exists");
+
+        //    return !string.IsNullOrEmpty(value) ? value : scrapeItem.DefaultValue;
+        //}
     }
 }

@@ -7,7 +7,7 @@ namespace Lychee.Scrapper.Repository
     {
         public ScrapperContext() : base("Scrapper.ConnectionString.Access")
         {
-            Database.SetInitializer(new ScrapperContextDataInitializer());
+            //Database.SetInitializer(new ScrapperContextDataInitializer());
         }
 
         public DbSet<ScrappedData> ScrappedData { get; set; }

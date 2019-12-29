@@ -21,9 +21,10 @@ namespace Lychee.Scrapper.Test.ServiceTest
         private static readonly Mock<ILoggingService> _loggingService = new Mock<ILoggingService>();
         private static readonly Mock<IColumnDefinitionRepository> _columnDefinitionRepository = new Mock<IColumnDefinitionRepository>();
         private static readonly Mock<IWebQueryService> _webQueryService = new Mock<IWebQueryService>();
+        private static readonly Mock<IPageListPaginationService> _pageListPaginationService = new Mock<IPageListPaginationService>();
 
         public PageListScrapperServiceTest() : base(_settingRepository.Object, null, _loggingService.Object,
-            _resultCollectionService.Object, _webQueryService.Object)
+            _resultCollectionService.Object, _webQueryService.Object, _pageListPaginationService.Object)
         {
         }
 
@@ -110,7 +111,8 @@ namespace Lychee.Scrapper.Test.ServiceTest
             
             var scrappedDataRepository = new ScrappedDataRepositoryMock();
             var resultCollectionService = new ResultCollectionService(_columnDefinitionRepository.Object, scrappedDataRepository, _settingRepository.Object);
-            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object, resultCollectionService, _webQueryService.Object);
+            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object,
+                resultCollectionService, _webQueryService.Object, _pageListPaginationService.Object);
 
 
             //Act
@@ -148,7 +150,8 @@ namespace Lychee.Scrapper.Test.ServiceTest
 
             var scrappedDataRepository = new ScrappedDataRepositoryMock();
             var resultCollectionService = new ResultCollectionService(_columnDefinitionRepository.Object, scrappedDataRepository, _settingRepository.Object);
-            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object, resultCollectionService, _webQueryService.Object);
+            var service = new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object,
+                resultCollectionService, _webQueryService.Object, _pageListPaginationService.Object);
 
 
             //Act

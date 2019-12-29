@@ -7,8 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Enums;
+using Lychee.Scrapper.Domain.Extensions;
+using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
+using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -27,6 +30,7 @@ namespace Lychee.Scrapper.Test.Scrapper
         private Mock<ISettingRepository> _settingRepository;
         private Mock<ILoggingService> _loggingService;
         private Mock<IWebQueryService> _webQueryService;
+        private Mock<IScrappedSettingRepository> _scrappedSettingRepository;
 
         private Logger _logger;
 
@@ -37,6 +41,7 @@ namespace Lychee.Scrapper.Test.Scrapper
             _loggingService = new Mock<ILoggingService>();
 
             _webQueryService = new Mock<IWebQueryService>();
+            _scrappedSettingRepository = new Mock<IScrappedSettingRepository>();
 
             _settingRepository.Setup(x => x.GetSettingValue<string>("SmartScrapper.Chromium.DownloadPath")).Returns(@"C:\Cawi\DEV\Lychee\Lychee.Scrapper\CustomChromium");
 
@@ -74,12 +79,51 @@ namespace Lychee.Scrapper.Test.Scrapper
                 ScrapeDataFromModal
             };
 
+            _scrappedSettingRepository.Setup(x => x.GetItemSettings("TableDataSetting")).Returns(
+                new List<ScrapeItemSetting>
+                {
+                    new ScrapeItemSetting {Key = "Name", Accessor = ScrappingAccessor.Html, Selector = "td:eq(0)"},
+                    new ScrapeItemSetting {Key = "LoanAmount", Accessor = ScrappingAccessor.Value, Selector = "td:eq(1) input"},
+                    new ScrapeItemSetting {Key = "Image", Accessor = ScrappingAccessor.Attribute, Selector = "td:eq(2) img", AttributeName = "src"},
+                    new ScrapeItemSetting {Key = "ImageId", Accessor = ScrappingAccessor.Attribute, Selector = "td:eq(2) img", AttributeName = "data-id"},
+                    new ScrapeItemSetting {Key = "LocationValue", Accessor = ScrappingAccessor.Value, Selector = "td:eq(3) select"},
+                    new ScrapeItemSetting {Key = "LocationText", Accessor = ScrappingAccessor.Text, Selector = "td:eq(3) select option:selected"},
+                    new ScrapeItemSetting {Key = "Enabled", Accessor = ScrappingAccessor.Attribute, Selector = "td:eq(4) input:checkbox", AttributeName = "checked"},
+                });
+
             //Act
             var result = await _scrapper.Scrape();
 
 
             //Asserts
             Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task CanLoadTextboxValueGeneratedFromJavascipt()
+        {
+            //Arrange
+            _scrapper.IsHeadless = true;
+            _scrapper.Url = "http://lychee.scrapper.localhost/Home/Data";
+            _scrapper.CustomScrappingInstructions = new List<SmartScrapper.CustomScrapping>
+            {
+                ScrapeTextboxDataGeneratedByJavascript
+            };
+
+            //Act
+            var result = await _scrapper.Scrape();
+
+            //Asserts
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.GetByKey("TextBox").First().Value, Is.Not.EqualTo("test"));
+            Assert.That(result.GetByKey("TextBox").First().Value, Is.EqualTo("Content Loaded On Page Load"));
+
+        }
+
+        private async Task ScrapeTextboxDataGeneratedByJavascript(Page page, ResultCollection<ResultItemCollection> resultCollection)
+        {
+            var value = await PuppeteerHelper.GetTextboxValue(page, "#txtOnLoad");
+            resultCollection.AddItem("TextBox", new List<ResultItem> { new ResultItem { Name = "TextBox", Value = value}});
         }
 
         private async Task ScrapeDataFromModal(Page page, ResultCollection<ResultItemCollection> resultCollection)
@@ -93,20 +137,10 @@ namespace Lychee.Scrapper.Test.Scrapper
             await page.WaitForSelectorAsync(resultSelector);
 
 
-
             //try to get the table headers
-            var tableMapping = new List<SmartScrapperTableObjectMapping>
-            {
-                new SmartScrapperTableObjectMapping {ColumnName = "Name", Accessor = TableObjectAccessor.InnerText, Index = 0},
-                new SmartScrapperTableObjectMapping {ColumnName = "LoanAmount", Accessor = TableObjectAccessor.Value, Index = 1, ElementSelector = "input"},
-                new SmartScrapperTableObjectMapping {ColumnName = "Image", Accessor = TableObjectAccessor.Attribute, Index = 2, ElementSelector = "img", ElementAttribute = "src"},
-                new SmartScrapperTableObjectMapping {ColumnName = "ImageId", Accessor = TableObjectAccessor.Attribute, Index = 2, ElementSelector = "img", ElementAttribute = "data-id"},
-                new SmartScrapperTableObjectMapping {ColumnName = "LocationValue", Accessor = TableObjectAccessor.Value, Index = 3, ElementSelector = "select"},
-                new SmartScrapperTableObjectMapping {ColumnName = "LocationText", Accessor = TableObjectAccessor.SelectedDropDownText, Index = 3,  ElementSelector = "select"},
-            };
-
-            await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/ScrapperFunctions.js");
-            var dataSelector = "table > tbody > tr";
+            var mapping = _scrappedSettingRepository.Object.GetItemSettings("TableDataSetting");
+            
+            var dataSelector = ".modal-content table > tbody > tr";
             var tData = await page.EvaluateFunctionAsync(@"(dataSelector, tableMapping) => {
                 const data = Array.from(document.querySelectorAll(dataSelector));
                 var items = [];
@@ -114,29 +148,35 @@ namespace Lychee.Scrapper.Test.Scrapper
                     var obj = {};
                     tableMapping.forEach((i, idx) => {
 
-                        if (i.accessor === 'InnerText') {
-                            obj[i.columnName] = getInnerText(item.querySelectorAll('td').item(parseInt(i.index)));
+                        if (i.accessor === 'Html') {
+                            obj[i.key] = getHtml($(item), i.selector);
                         }
                         else if (i.accessor === 'Value') {
-                            obj[i.columnName] = getInputValue(item.querySelectorAll('td').item(parseInt(i.index)).querySelector(i.elementSelector));
+                            obj[i.key] = getValue($(item), i.selector);
                         }
                         else if (i.accessor === 'Attribute') {
-                            obj[i.columnName] = getAttribute(item.querySelectorAll('td').item(parseInt(i.index)).querySelector(i.elementSelector), (i.elementAttribute));
+                            obj[i.key] = getAttribute($(item), i.selector, i.attributeName);
                         }
-                        else if (i.accessor === 'SelectedDropDownText') {
-                            obj[i.columnName] = dropDownSelectedText(item.querySelectorAll('td').item(parseInt(i.index)).querySelector(i.elementSelector));
+                        else if (i.accessor === 'Text') {
+                            obj[i.key] = getText($(item), i.selector);
                         }
                     });
                     items.push(obj);
                 });
 
                 return items;
-            }", dataSelector, tableMapping);
+            }", dataSelector, mapping);
 
 
             foreach (JToken link in tData)
             {
-                Debug.WriteLine(link["LocationText"].Value<string>());
+                Debug.WriteLine(link["Name"].GetValue());
+                Debug.WriteLine(link["LoanAmount"].GetValue());
+                Debug.WriteLine(link["Image"].GetValue());
+                Debug.WriteLine(link["ImageId"].GetValue());
+                Debug.WriteLine(link["LocationValue"].GetValue());
+                Debug.WriteLine(link["LocationText"].GetValue());
+                Debug.WriteLine(link["Enabled"].GetValue());
             }
 
             //var content = page.MainFrame.GetContentAsync();

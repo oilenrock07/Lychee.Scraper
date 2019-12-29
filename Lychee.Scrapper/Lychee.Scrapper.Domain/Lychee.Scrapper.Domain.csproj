@@ -77,6 +77,9 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NScrape, Version=0.4.1.0, Culture=neutral, PublicKeyToken=3eeedf0868bb1580, processorArchitecture=MSIL">
+      <HintPath>..\packages\NScrape.0.4.1\lib\netstandard2.0\NScrape.dll</HintPath>
+    </Reference>
     <Reference Include="PuppeteerSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PuppeteerSharp.1.20.0\lib\netstandard2.0\PuppeteerSharp.dll</HintPath>
     </Reference>
@@ -100,6 +103,9 @@
     </Reference>
     <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.File.4.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Sprache.Signed, Version=2.2.0.0, Culture=neutral, PublicKeyToken=57f43ee1809c4ea6, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sprache.Signed.2.2.0\lib\net45\Sprache.Signed.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -127,6 +133,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
       <Private>True</Private>
@@ -262,14 +271,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\TableObjectAccessor.cs" />
+    <Compile Include="Enums\ScrappingAccessor.cs" />
     <Compile Include="Enums\HeaderRequestType.cs" />
     <Compile Include="Enums\ScrapperType.cs" />
+    <Compile Include="Extensions\JTokenExtension.cs" />
     <Compile Include="Helpers\CSVHelper.cs" />
     <Compile Include="Helpers\ObjectExtension.cs" />
+    <Compile Include="Helpers\PuppeteerHelper.cs" />
     <Compile Include="Helpers\RelatedDataHelper.cs" />
     <Compile Include="Helpers\ScrappedDataHelper.cs" />
     <Compile Include="Interfaces\ILoggingService.cs" />
+    <Compile Include="Interfaces\IPageListPaginationService.cs" />
+    <Compile Include="Interfaces\IPageListScrapper.cs" />
     <Compile Include="Interfaces\IPageListScrapperService.cs" />
     <Compile Include="Interfaces\IScrapperService.cs" />
     <Compile Include="Interfaces\IResultCollectionService.cs" />
@@ -281,21 +294,22 @@
     <Compile Include="Models\Scrappers\PageDetailScrapper.cs" />
     <Compile Include="Models\Scrappers\PageListPagination.cs" />
     <Compile Include="Models\Scrappers\PageListScrapper.cs" />
+    <Compile Include="Models\Scrappers\PageListSmartScrapper.cs" />
     <Compile Include="Models\Scrappers\ResultCollection.cs" />
     <Compile Include="Models\Scrappers\ResultItemCollection.cs" />
     <Compile Include="Models\Scrappers\ResultItem.cs" />
     <Compile Include="Models\Scrappers\SmartHtmlElements.cs" />
-    <Compile Include="Models\Scrappers\SmartInstruction.cs" />
     <Compile Include="Models\Scrappers\SmartScrapper.cs" />
     <Compile Include="Models\Scrappers\SmartScrapperTableObjectMapping.cs" />
     <Compile Include="Models\Web\WebQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\PageDetailScrapperService.cs" />
+    <Compile Include="Services\PageListPaginationService.cs" />
     <Compile Include="Services\PageListScrapperService.cs" />
     <Compile Include="Services\ResultCollectionService.cs" />
     <Compile Include="Services\ScrapperServiceFactory.cs" />
-    <Compile Include="Services\SmartScrappingEventService.cs" />
+    <Compile Include="Services\PageListSmartScrapperService.cs" />
     <Compile Include="Services\WebQueryService.cs" />
   </ItemGroup>
   <ItemGroup>

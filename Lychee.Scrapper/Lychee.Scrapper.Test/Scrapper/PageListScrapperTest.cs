@@ -139,5 +139,27 @@ namespace Lychee.Scrapper.Test.Scrapper
             //Asserts
             Assert.That(result, Is.Not.Null);
         }
+
+        [Test]
+        public async Task CanScrapeDataFromTable()
+        {
+            //Arrange
+            _scrapper.ItemXPath = ".body-content table:first-child > tbody > tr";
+            _scrapper.Url = "http://lychee.scrapper.localhost/Home/Data";
+            _scrapper.Items = new List<ScrapeItemSetting>
+            {
+                new ScrapeItemSetting { Key = "Name", Selector = "td:nth-child(1)"},
+                new ScrapeItemSetting { Key = "Price", Selector = "td:nth-child(2) input", AttributeName = "value"},
+                new ScrapeItemSetting { Key = "PlatformValue", Selector = "td:nth-child(4) select option[selected=\"selected\"]", AttributeName = "value"},
+                new ScrapeItemSetting { Key = "PlatformText", Selector = "td:nth-child(4) select option[selected=\"selected\"]"},
+                new ScrapeItemSetting { Key = "IsActive", Selector = "td:nth-child(5) input", AttributeName = "checked"},
+            };
+
+            //Act
+            var result = await _scrapper.Scrape();
+
+            //Asserts
+            Assert.That(result, Is.Not.Null);
+        }
     }
 }

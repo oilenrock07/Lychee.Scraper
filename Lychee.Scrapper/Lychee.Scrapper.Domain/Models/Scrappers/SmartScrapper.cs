@@ -20,6 +20,8 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         public List<CustomScrapping> CustomScrappingInstructions { get; set; }
         
         public virtual bool IsHeadless { get; set; }
+        public bool IsFirstPage { get; set; }
+        public string PageContent { get; set; }
 
         private BrowserFetcher BrowserFetcher { get; set; }
 
@@ -33,6 +35,8 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         public override async Task<ResultCollection<ResultItemCollection>> Scrape()
         {
+            var resultCollection = new ResultCollection<ResultItemCollection>();
+
             try
             {
                 var browserFetcher = GetBrowserFetcher();
@@ -40,7 +44,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                 var executablePath = browserFetcher.GetExecutablePath(BrowserFetcher.DefaultRevision);
                 var options = new LaunchOptions { Headless = IsHeadless, ExecutablePath = executablePath };
 
-                var resultCollection = new ResultCollection<ResultItemCollection>();
+                
                 using (var browser = await Puppeteer.LaunchAsync(options))
                 using (var page = await browser.NewPageAsync())
                 {
@@ -48,11 +52,15 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
                     if (CustomScrappingInstructions?.Any() ?? false)
                     {
+                        await AddScripts(page);
                         foreach (var instruction in CustomScrappingInstructions)
                         {
                             await instruction.Invoke(page, resultCollection);
                         }
                     }
+
+                    if (IsFirstPage)
+                        PageContent = await page.MainFrame.GetContentAsync();
                 }
             }
             catch (Exception ex)
@@ -60,7 +68,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                 throw ex;
             }
 
-            return null;
+            return resultCollection;
 
             //await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
             //var browser = await Puppeteer.LaunchAsync(new LaunchOptions
@@ -81,16 +89,22 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         }
 
 
-        public HtmlNode GetLoadedHtmlNode()
+        public virtual HtmlNode GetLoadedHtmlNode()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(PageContent))
+                return null;
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(PageContent);
+
+            return doc.DocumentNode;
         }
 
         /// <summary>
         /// Load the browser fetcher from file
         /// </summary>
         /// <returns></returns>
-        protected BrowserFetcher GetBrowserFetcher()
+        protected virtual BrowserFetcher GetBrowserFetcher()
         {
             if (BrowserFetcher != null) return BrowserFetcher;
 
@@ -110,5 +124,12 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
             return BrowserFetcher;
         }
+
+        protected virtual async Task AddScripts(Page page)
+        {
+            await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/ScrapperFunctions.js"); //add custom scrapper functions
+            await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/jquery-3.3.1.min.js"); //add jquery for faster searching for element
+        }
+
     }
 }

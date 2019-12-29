@@ -34,13 +34,11 @@ namespace Lychee.Scrapper.Domain.Services
 
         public IScrapperService GetScrapper()
         {
-            var loggingPath = ConfigurationManager.AppSettings["LoggingPath"];
-            var logger = new LoggerConfiguration().WriteTo.File(loggingPath).CreateLogger();
-
             if (string.Equals(_scrapper, ScrapperType.PageList, StringComparison.InvariantCultureIgnoreCase))
             {
                 var scrapper = new PageListScrapper(_settingRepository, _loggingService, _webQueryService);
-                return new PageListScrapperService(_settingRepository, scrapper, _loggingService, _resultCollectionService, _webQueryService);
+                var pageListPaginationService = new PageListPaginationService(_settingRepository, _loggingService, scrapper);
+                return new PageListScrapperService(_settingRepository, scrapper, _loggingService, _resultCollectionService, _webQueryService, pageListPaginationService);
             }
                 
             throw new NotImplementedException();

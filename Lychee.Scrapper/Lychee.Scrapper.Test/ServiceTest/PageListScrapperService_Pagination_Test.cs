@@ -33,7 +33,7 @@ namespace Lychee.Scrapper.Test.ServiceTest
         private PageListScrapperService GetPageListScrapperService(PageListScrapper scrapper)
         {
             return new PageListScrapperService(_settingRepository.Object, scrapper, _loggingService.Object,
-                _resultCollectionService.Object, _webQueryService.Object);
+                _resultCollectionService.Object, _webQueryService.Object, null);
         }
 
         [OneTimeSetUp]
@@ -56,10 +56,10 @@ namespace Lychee.Scrapper.Test.ServiceTest
         {
             //Arrange
             _settingRepository.Setup(x => x.GetSettingValue<string>("PageListScrapper.URL.QueryStringPageVariable")).Returns("page");
-            var scrapperService = GetPageListScrapperService(scrapper);
+            var pageListPaginationService = new PageListPaginationService(_settingRepository.Object, _loggingService.Object, scrapper);
 
             //Act
-            var result = scrapperService.IsFirstPage(null);
+            var result = pageListPaginationService.IsFirstPage(null);
 
             //Asserts
             Assert.That(result, Is.EqualTo(isFirstPage));
@@ -74,10 +74,10 @@ namespace Lychee.Scrapper.Test.ServiceTest
                 PaginationSettings = new PageListPagination {PaginationSelector = ".pagination li.active span"}
             };
 
-            var scrapperService = GetPageListScrapperService(scrapper);
+            var pageListPaginationService = new PageListPaginationService(_settingRepository.Object, _loggingService.Object, scrapper);
 
             //Act
-            var result = scrapperService.IsFirstPage(scrapper.GetLoadedHtmlNode());
+            var result = pageListPaginationService.IsFirstPage(scrapper.GetLoadedHtmlNode());
 
             //Asserts
             Assert.That(result, Is.EqualTo(true));
@@ -92,10 +92,10 @@ namespace Lychee.Scrapper.Test.ServiceTest
                 PaginationSettings = new PageListPagination { PaginationSelector = ".pagination li active span" }
             };
 
-            var scrapperService = GetPageListScrapperService(scrapper);
+            var pageListPaginationService = new PageListPaginationService(_settingRepository.Object, _loggingService.Object, scrapper);
 
             //Act
-            var result = scrapperService.IsFirstPage(scrapper.GetLoadedHtmlNode());
+            var result = pageListPaginationService.IsFirstPage(scrapper.GetLoadedHtmlNode());
 
             //Asserts
             Assert.That(result, Is.EqualTo(false));
@@ -152,11 +152,11 @@ namespace Lychee.Scrapper.Test.ServiceTest
                 PaginationSettings = new PageListPagination { PaginationSelector = ".pagination li active span" }
             };
 
-            var scrapperService = GetPageListScrapperService(scrapper);
+            var pageListPaginationService = new PageListPaginationService(_settingRepository.Object, _loggingService.Object, scrapper);
             var node = scrapper.GetLoadedHtmlNode();
 
             //Act
-            var lastPage = scrapperService.GetLastPageNumber(node);
+            var lastPage = pageListPaginationService.GetLastPageNumber(node);
 
             //Assert
             Assert.That(lastPage, Is.EqualTo(13));
