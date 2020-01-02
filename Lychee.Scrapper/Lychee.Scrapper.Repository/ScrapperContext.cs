@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 
 namespace Lychee.Scrapper.Repository
 {

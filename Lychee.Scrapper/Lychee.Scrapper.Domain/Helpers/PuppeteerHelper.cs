@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 using Newtonsoft.Json.Linq;
 using PuppeteerSharp;
 
@@ -25,25 +25,31 @@ namespace Lychee.Scrapper.Domain.Helpers
                 data.forEach((item, index) => {
                     var obj = {};
                     tableMapping.forEach((i, idx) => {
-
-                        if (i.accessor === 'Html') {
-                            obj[i.key] = getHtml($(item), i.selector);
-                        }
-                        else if (i.accessor === 'Value') {
-                            obj[i.key] = getValue($(item), i.selector);
-                        }
-                        else if (i.accessor === 'Attribute') {
-                            obj[i.key] = getAttribute($(item), i.selector, i.attributeName);
-                        }
-                        else if (i.accessor === 'Text') {
-                            obj[i.key] = getText($(item), i.selector);
-                        }
+                        setObject(obj, i, item);
                     });
                     items.push(obj);
                 });
 
                 return items;
             }", dataSelector, mappings);
+
+            return tData;
+        }
+
+        public static async Task<JToken> GetElements(Page page, List<ScrapeItemSetting> mappings)
+        {
+            var tData = await page.EvaluateFunctionAsync(@"(mappings) => {
+                var items = [];
+
+                mappings.forEach((i, idx) => {
+                    var obj = {};
+                    var element = $(document);
+                    setObject(obj, i, element);
+                    items.push(obj);
+                });
+
+                return items;
+            }", mappings);
 
             return tData;
         }

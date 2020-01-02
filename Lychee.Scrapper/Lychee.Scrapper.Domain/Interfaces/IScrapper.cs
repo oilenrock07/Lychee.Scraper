@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using HtmlAgilityPack;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 
 namespace Lychee.Scrapper.Domain.Interfaces
 {

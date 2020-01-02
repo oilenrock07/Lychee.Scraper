@@ -51,10 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\HeaderRequest.cs" />
-    <Compile Include="Entities\ScrapeItemSetting.cs" />
-    <Compile Include="Entities\ScrapeSetting.cs" />
-    <Compile Include="Entities\Setting.cs" />
     <Compile Include="Interfaces\IColumnDefinitionRepository.cs" />
     <Compile Include="Interfaces\IHeaderRequestRepository.cs" />
     <Compile Include="Interfaces\IScrappedDataRepository.cs" />
@@ -63,9 +59,6 @@
     <Compile Include="Repositories\ColumnDefinitionRepository.cs" />
     <Compile Include="Repositories\HeaderRequestRepository.cs" />
     <Compile Include="Repositories\ScrappedDataRepository.cs" />
-    <Compile Include="Entities\ColumnDefinition.cs" />
-    <Compile Include="Entities\RelatedData.cs" />
-    <Compile Include="Entities\ScrappedData.cs" />
     <Compile Include="Interfaces\IContextFactory.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +72,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Lychee.Scrapper.Entities\Lychee.Scrapper.Entities.csproj">
+      <Project>{9448fa85-0fa4-41c4-b49e-a25fe9bc1bea}</Project>
+      <Name>Lychee.Scrapper.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

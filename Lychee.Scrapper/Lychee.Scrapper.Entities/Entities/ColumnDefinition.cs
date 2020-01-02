@@ -1,4 +1,4 @@
-﻿namespace Lychee.Scrapper.Repository.Entities
+﻿namespace Lychee.Scrapper.Entities.Entities
 {
     public class ColumnDefinition
     {

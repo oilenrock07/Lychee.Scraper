@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 
 namespace Lychee.Scrapper.Repository.Repositories
@@ -40,7 +40,7 @@ namespace Lychee.Scrapper.Repository.Repositories
             using (var context = new ScrapperContext())
             {
                 var repository = new Repository<ColumnDefinition>(context);
-                var columns = repository.Find(x => x.TableName == nameof(ScrappedData)).ToList();
+                var columns = repository.Find(x => x.TableName == nameof(RelatedData)).ToList();
 
                 if (!columns.Any()) return result;
 

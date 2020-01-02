@@ -16,12 +16,25 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
         private readonly ISettingRepository _settingRepository;
         private readonly ILoggingService _loggingService;
 
-        public delegate Task CustomScrapping(Page page, ResultCollection<ResultItemCollection> resultCollection);
+        public delegate Task CustomScrapping(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args);
+
+        /// <summary>
+        /// This is a required property that you need to pass.
+        /// This is the instructions that the smart scrapper needs to perform
+        /// </summary>
         public List<CustomScrapping> CustomScrappingInstructions { get; set; }
         
+        /// <summary>
+        /// If you did not pass any custom scripts it will use the default from the website hosted by this project
+        /// CustomScripts might be the scripts you have hosted on your site
+        /// </summary>
+        public List<string> CustomScripts { get; set; }
+
         public virtual bool IsHeadless { get; set; }
         public bool IsFirstPage { get; set; }
         public string PageContent { get; set; }
+
+        public Dictionary<string, object> Parameters { get; set; }
 
         private BrowserFetcher BrowserFetcher { get; set; }
 
@@ -55,7 +68,7 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
                         await AddScripts(page);
                         foreach (var instruction in CustomScrappingInstructions)
                         {
-                            await instruction.Invoke(page, resultCollection);
+                            await instruction.Invoke(page, resultCollection, Parameters);
                         }
                     }
 
@@ -69,23 +82,6 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             }
 
             return resultCollection;
-
-            //await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
-            //var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            //{
-            //    Headless = true
-            //});
-
-            //var page = await browser.NewPageAsync();
-            //await page.GoToAsync(Url);
-
-            //await page.SelectAsync("#datatab1_1 #stock_code", "MPS");
-            //await page.SelectAsync("#stkfut_frm #sel_exp_date", "2019-10-31");
-            //ElementHandle[] element = await page.XPathAsync("//*[@id=\"stkfut_frm\"]/div/div[3]/div/a");
-            //await element.First().ClickAsync();
-
-            //await page.WaitForSelectorAsync(".MT15");
-            //var result = await page.MainFrame.GetContentAsync();
         }
 
 
@@ -127,8 +123,16 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
         protected virtual async Task AddScripts(Page page)
         {
-            await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/ScrapperFunctions.js"); //add custom scrapper functions
-            await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/jquery-3.3.1.min.js"); //add jquery for faster searching for element
+            if (CustomScripts?.Any() ?? false)
+            {
+                foreach(var script in CustomScripts)
+                    await page.AddScriptTagAsync(script);
+            }
+            else
+            {
+                await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/ScrapperFunctions.js"); //add custom scrapper functions
+                await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/jquery-3.3.1.min.js"); //add jquery for faster searching for element
+            }            
         }
 
     }

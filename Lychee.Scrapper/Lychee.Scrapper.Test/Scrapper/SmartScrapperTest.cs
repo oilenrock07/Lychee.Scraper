@@ -11,7 +11,7 @@ using Lychee.Scrapper.Domain.Extensions;
 using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 using Moq;
 using Newtonsoft.Json.Linq;
@@ -58,7 +58,7 @@ namespace Lychee.Scrapper.Test.Scrapper
             _scrapper.Url = "http://lychee.scrapper.localhost/";
             _scrapper.CustomScrappingInstructions = new List<SmartScrapper.CustomScrapping>
             {
-                async delegate(Page page, ResultCollection<ResultItemCollection> resultCollection)
+                async delegate(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args)
                 {
                     await page.WaitForSelectorAsync("#Users div");
                     var result = await page.MainFrame.GetContentAsync();
@@ -120,13 +120,13 @@ namespace Lychee.Scrapper.Test.Scrapper
 
         }
 
-        private async Task ScrapeTextboxDataGeneratedByJavascript(Page page, ResultCollection<ResultItemCollection> resultCollection)
+        private async Task ScrapeTextboxDataGeneratedByJavascript(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args)
         {
             var value = await PuppeteerHelper.GetTextboxValue(page, "#txtOnLoad");
             resultCollection.AddItem("TextBox", new List<ResultItem> { new ResultItem { Name = "TextBox", Value = value}});
         }
 
-        private async Task ScrapeDataFromModal(Page page, ResultCollection<ResultItemCollection> resultCollection)
+        private async Task ScrapeDataFromModal(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args)
         {
             var buttonSelector = ".btn-primary";
             await page.WaitForSelectorAsync(buttonSelector); //wait for the button to be displayed

@@ -11,7 +11,7 @@ using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
 using Lychee.Scrapper.Domain.Models.Web;
 using Lychee.Scrapper.Domain.Services;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 using Lychee.Scrapper.Repository.Repositories;
 using Moq;

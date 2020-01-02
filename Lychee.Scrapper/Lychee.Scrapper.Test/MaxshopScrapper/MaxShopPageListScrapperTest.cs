@@ -1,22 +1,17 @@
-﻿using Lychee.Scrapper.Domain;
-using Lychee.Scrapper.Domain.Models.Scrappers;
+﻿using Lychee.Scrapper.Domain.Models.Scrappers;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Services;
-using Lychee.Scrapper.Repository.Entities;
-using Lychee.Scrapper.Repository.Interfaces;
 using Lychee.Scrapper.Repository.Repositories;
 using Moq;
 using Serilog;
+using Lychee.Scrapper.Entities.Entities;
 
 namespace Lychee.Scrapper.Test.MaxshopScrapper
 {

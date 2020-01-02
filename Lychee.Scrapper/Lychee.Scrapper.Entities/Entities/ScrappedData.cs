@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Lychee.Scrapper.Repository.Entities
+namespace Lychee.Scrapper.Entities.Entities
 {
     [Table("ScrappedData")]
     public class ScrappedData

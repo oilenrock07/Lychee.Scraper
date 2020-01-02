@@ -19,6 +19,21 @@ function getText(element, selector) {
     return $(element).find(selector).text();
 }
 
+function setObject(obj, item, element) {
+    if (item.accessor === 'Html') {
+        obj[item.key] = getHtml($(element), item.selector);
+    }
+    else if (item.accessor === 'Value') {
+        obj[item.key] = getValue($(element), item.selector);
+    }
+    else if (item.accessor === 'Attribute') {
+        obj[item.key] = getAttribute($(element), item.selector, item.attributeName);
+    }
+    else if (item.accessor === 'Text') {
+        obj[item.key] = getText($(element), item.selector);
+    }
+}
+
 //function dropDownSelectedText(element) {
 //    return element.options[element.selectedIndex].text;
 

@@ -6,5 +6,7 @@
         public object Value { get; set; }
 
         public bool IsMultiple { get; set; }
+
+        public string Group { get; set; }
     }
 }

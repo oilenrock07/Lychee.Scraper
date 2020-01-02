@@ -6,8 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fizzler.Systems.HtmlAgilityPack;
 using Lychee.Scrapper.Domain.Interfaces;
-using Lychee.Scrapper.Domain.Models.Web;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers
 {

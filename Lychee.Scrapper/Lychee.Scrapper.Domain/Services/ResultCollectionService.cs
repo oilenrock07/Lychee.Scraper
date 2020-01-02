@@ -3,7 +3,7 @@ using System.Linq;
 using Lychee.Scrapper.Domain.Helpers;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
-using Lychee.Scrapper.Repository.Entities;
+using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 
 namespace Lychee.Scrapper.Domain.Services
@@ -29,11 +29,13 @@ namespace Lychee.Scrapper.Domain.Services
             var list = new List<ScrappedData>();
             foreach (var product in data)
             {
-                var scrappedData = new ScrappedData();
+                var scrappedData = new ScrappedData { Identifier = product.Key };
+                var group = "";
                 foreach (var item in product.Items)
                 {
                     if (item.IsMultiple)
                     {
+                        //related data
                         if (scrappedData.RelatedData == null)
                             scrappedData.RelatedData = new List<RelatedData>();
 
@@ -50,15 +52,26 @@ namespace Lychee.Scrapper.Domain.Services
                         }
                         else
                         {
-                            if (!scrappedData.RelatedData.Any())
-                                scrappedData.RelatedData.Add(new RelatedData());
+                            RelatedData relatedData;
+                            if (!scrappedData.RelatedData.Any() || group != item.Group)
+                            {
+                                relatedData = new RelatedData { Group = item.Group };
+                                scrappedData.RelatedData.Add(relatedData);
 
-                            var relatedData = scrappedData.RelatedData.First();
+                                if (group != item.Group)
+                                    group = item.Group;
+                            }
+                            else
+                            {
+                                relatedData = scrappedData.RelatedData.First(x => x.Group == item.Group);
+                            }
+
                             RelatedDataHelper.SetValue(relatedData, item.Name, relatedDataColumnDefinitions, item.Value);
                         }
                     }
                     else
                     {
+                        //scrappe data
                         if (scrappedDataColumnDefinitions.TryGetValue((nameof(ScrappedData), item.Name), out var value))
                             ScrappedDataHelper.SetValue(scrappedData, value, item.Value);
                     }

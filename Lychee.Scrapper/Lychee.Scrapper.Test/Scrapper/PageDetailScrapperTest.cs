@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Threading.Tasks;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Domain.Models.Scrappers;
-using Lychee.Scrapper.Repository.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 using Moq;
 using NUnit.Framework;

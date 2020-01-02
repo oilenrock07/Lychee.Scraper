@@ -1,4 +1,4 @@
-﻿namespace Lychee.Scrapper.Repository.Entities
+﻿namespace Lychee.Scrapper.Entities.Entities
 {
     public class HeaderRequest
     {
@@ -8,7 +8,7 @@
         public string Value { get; set; }
         public string String1 { get; set; }
         public string String2 { get; set; }
-        public string String3{ get; set; }
+        public string String3 { get; set; }
 
     }
 }

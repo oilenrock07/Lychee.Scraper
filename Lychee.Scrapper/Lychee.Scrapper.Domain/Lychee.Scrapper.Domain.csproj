@@ -321,8 +321,12 @@
     <Folder Include="Models\CSV\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Lychee.Scrapper.Entities\Lychee.Scrapper.Entities.csproj">
+      <Project>{9448fa85-0fa4-41c4-b49e-a25fe9bc1bea}</Project>
+      <Name>Lychee.Scrapper.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lychee.Scrapper.Repository\Lychee.Scrapper.Repository.csproj">
-      <Project>{ECDA56CD-6163-4A03-8E7D-175A6144C0E1}</Project>
+      <Project>{ecda56cd-6163-4a03-8e7d-175a6144c0e1}</Project>
       <Name>Lychee.Scrapper.Repository</Name>
     </ProjectReference>
   </ItemGroup>

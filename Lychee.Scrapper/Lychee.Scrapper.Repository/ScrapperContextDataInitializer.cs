@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Lychee.Scrapper.Entities.Entities;
+using System.Collections.Generic;
 using System.Data.Entity;
-using Lychee.Scrapper.Repository.Entities;
 
 namespace Lychee.Scrapper.Repository
 {

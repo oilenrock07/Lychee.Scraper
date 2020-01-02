@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lychee.Scrapper.Test", "Lyc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lychee.Scrapper.Domain", "Lychee.Scrapper.Domain\Lychee.Scrapper.Domain.csproj", "{48ECE161-C497-499B-B1CB-66A0E5D5A811}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lychee.Scrapper.Entities", "Lychee.Scrapper.Entities\Lychee.Scrapper.Entities.csproj", "{9448FA85-0FA4-41C4-B49E-A25FE9BC1BEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{48ECE161-C497-499B-B1CB-66A0E5D5A811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48ECE161-C497-499B-B1CB-66A0E5D5A811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48ECE161-C497-499B-B1CB-66A0E5D5A811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9448FA85-0FA4-41C4-B49E-A25FE9BC1BEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9448FA85-0FA4-41C4-B49E-A25FE9BC1BEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9448FA85-0FA4-41C4-B49E-A25FE9BC1BEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9448FA85-0FA4-41C4-B49E-A25FE9BC1BEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

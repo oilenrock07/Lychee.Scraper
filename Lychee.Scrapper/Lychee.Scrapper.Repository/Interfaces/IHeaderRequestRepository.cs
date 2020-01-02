@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Lychee.Scrapper.Repository.Entities;
+﻿using Lychee.Scrapper.Entities.Entities;
+using System.Collections.Generic;
 
 namespace Lychee.Scrapper.Repository.Interfaces
 {
