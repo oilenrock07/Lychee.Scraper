@@ -21,7 +21,13 @@ namespace Lychee.Scrapper.Domain.Services
             _settingRepository = settingRepository;
         }
 
-        public void SaveScrappedData(ResultCollection<ResultItemCollection> data)
+        public virtual void SaveScrappedData(ResultCollection<ResultItemCollection> data)
+        {
+            var list = MapToScrappedData(data);
+            _scrappedDataRepository.SaveScrappedData(list);
+        }
+
+        public virtual List<ScrappedData> MapToScrappedData(ResultCollection<ResultItemCollection> data)
         {
             var scrappedDataColumnDefinitions = _columnDefinitionRepository.GetAllScrappedDataColumnDefinitions();
             var relatedDataColumnDefinitions = _columnDefinitionRepository.GetAllRelatedDataColumnDefinitions();
@@ -71,7 +77,7 @@ namespace Lychee.Scrapper.Domain.Services
                     }
                     else
                     {
-                        //scrappe data
+                        //scrape data
                         if (scrappedDataColumnDefinitions.TryGetValue((nameof(ScrappedData), item.Name), out var value))
                             ScrappedDataHelper.SetValue(scrappedData, value, item.Value);
                     }
@@ -80,7 +86,7 @@ namespace Lychee.Scrapper.Domain.Services
                 list.Add(scrappedData);
             }
 
-            _scrappedDataRepository.SaveScrappedData(list);
+            return list;
         }
     }
 }

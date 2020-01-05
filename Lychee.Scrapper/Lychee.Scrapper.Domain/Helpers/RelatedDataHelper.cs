@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Lychee.Scrapper.Entities.Entities;
 
 namespace Lychee.Scrapper.Domain.Helpers
@@ -377,6 +378,56 @@ namespace Lychee.Scrapper.Domain.Helpers
                 data.Date5 = itemValue.ToDateTime();
                 return;
             }
+        }
+
+        public static List<T> MapToObject<T>(List<ScrappedData> scrappedData, Dictionary<(string, string), string> columnDefinitions, string identifier) where T : class, new()
+        {
+            var entities = new List<T>();
+            foreach (var item in scrappedData)
+            {
+                if (item.RelatedData?.Any() ?? false)
+                {
+                    foreach (var relatedData in item.RelatedData)
+                    {
+                        var entity = new T();
+                        entity.GetType().GetProperty(identifier)?.SetValue(entity, item.Identifier, null);
+
+                        foreach (var columnDefinition in columnDefinitions)
+                        {
+                            entity.GetType().GetProperty(columnDefinition.Value)?.SetValue(entity,
+                                relatedData.GetType().GetProperty(columnDefinition.Key.Item2)?.GetValue(relatedData).ToString(), null);
+                        }
+
+                        entities.Add(entity);
+                    }
+                }
+            }
+
+            return entities;
+        }
+
+        public static Dictionary<string, Dictionary<(string, string), string>> MapToDictionary<T>(List<ScrappedData> scrappedData, Dictionary<(string, string), string> columnDefinitions, string identifier) where T : class
+        {
+            var entities = new Dictionary<string, Dictionary<(string, string), string>>();
+            foreach (var item in scrappedData)
+            {
+                if (item.RelatedData?.Any() ?? false)
+                {
+                    var valueDictionary = new Dictionary<(string, string), string>();
+                    foreach (var relatedData in item.RelatedData)
+                    {
+                        var valueId = relatedData.GetType().GetProperty(columnDefinitions.First(x => x.Value == identifier).Key.Item2)?.GetValue(relatedData).ToString();
+                        foreach (var columnDefinition in columnDefinitions)
+                        {
+                            valueDictionary.Add((valueId, columnDefinition.Value), relatedData.GetType().GetProperty(columnDefinition.Key.Item2)?.GetValue(relatedData).ToString());
+                        }
+                    }
+
+                    entities.Add(item.Identifier, valueDictionary);
+                }
+            }
+
+            return entities;
         }
     }
 }

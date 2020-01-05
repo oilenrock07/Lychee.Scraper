@@ -1,4 +1,5 @@
-﻿using Lychee.Scrapper.Entities.Entities;
+﻿using System.Collections.Generic;
+using Lychee.Scrapper.Entities.Entities;
 
 namespace Lychee.Scrapper.Domain.Helpers
 {
@@ -198,6 +199,52 @@ namespace Lychee.Scrapper.Domain.Helpers
                     data.Decimal10 = itemValue.ToDecimal();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Map the Scrapped Data to the passed object
+        /// This is different from Related Data.
+        /// This will only map the strings, ints etc of the related to the object not the Related Data
+        /// THIS SHOULD ONLY BE IDEAL TO USE IF ALL THE PROPERTIES ON THE CLASS IS STRING. OTHERWISE BETTER USE MAP TO DICTIONARY
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="scrappedData"></param>
+        /// <param name="columnDefinitions"></param>
+        /// <returns></returns>
+        public static List<T> MapToObject<T>(List<ScrappedData> scrappedData, Dictionary<(string, string), string> columnDefinitions) where T : class, new()
+        {
+            var entities = new List<T>();
+            foreach (var item in scrappedData)
+            {
+                var entity = new T();
+
+                foreach (var columnDefinition in columnDefinitions)
+                {
+                    entity.GetType().GetProperty(columnDefinition.Key.Item2)?.SetValue(entity,
+                        item.GetType().GetProperty(columnDefinition.Value)?.GetValue(item).ToString(), null);
+                }
+
+                entities.Add(entity);
+            }
+
+            return entities;
+        }
+
+        public static Dictionary<string, Dictionary<string, string>> MapToDictionary<T>(List<ScrappedData> scrappedData, Dictionary<(string, string), string> columnDefinitions) where T : class
+        {
+            var entities = new Dictionary<string, Dictionary<string, string>>();
+            foreach (var item in scrappedData)
+            {
+                var valueDictionary = new Dictionary<string, string>();
+                foreach (var columnDefinition in columnDefinitions)
+                {
+                    valueDictionary.Add(columnDefinition.Key.Item2, item.GetType().GetProperty(columnDefinition.Value)?.GetValue(item).ToString());
+                }
+
+                entities.Add(item.Identifier, valueDictionary);
+            }
+
+            return entities;
         }
     }
 }

@@ -163,6 +163,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityMapperTest.cs" />
     <Compile Include="MaxshopScrapper\MaxShopPageListScrapperTest.cs" />
     <Compile Include="MyMoviesScrapper\MyMoviesScrapperTest.cs" />
     <Compile Include="MightyApeScrapper\MightyAppePageListScrapperTest.cs" />
