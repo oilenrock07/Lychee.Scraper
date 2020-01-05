@@ -9,7 +9,7 @@ namespace Lychee.Scrapper.Repository.Repositories
     {
         private List<HeaderRequest> _headerRequests = null;
 
-        public ICollection<HeaderRequest> GetAll()
+        public virtual ICollection<HeaderRequest> GetAll()
         {
             if (_headerRequests != null) return _headerRequests;
             using (var context = new ScrapperContext())
@@ -20,7 +20,7 @@ namespace Lychee.Scrapper.Repository.Repositories
             return _headerRequests;
         }
 
-        public List<HeaderRequest> GetHeaderRequest(string category)
+        public virtual List<HeaderRequest> GetHeaderRequest(string category)
         {
             if (_headerRequests == null)
                 GetAll();

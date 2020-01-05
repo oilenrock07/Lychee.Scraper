@@ -12,7 +12,7 @@ namespace Lychee.Scrapper.Repository.Repositories
         /// example. ("ScrappedData", "Image"), "String1"
         /// </summary>
         /// <returns></returns>
-        public Dictionary<(string, string), string> GetAllScrappedDataColumnDefinitions()
+        public virtual Dictionary<(string, string), string> GetAllScrappedDataColumnDefinitions()
         {
             var result = new Dictionary<(string, string), string>();
             using (var context = new ScrapperContext())
@@ -34,7 +34,7 @@ namespace Lychee.Scrapper.Repository.Repositories
         /// example. ("ScrappedData", "String1"), "Image"
         /// </summary>
         /// <returns></returns>
-        public Dictionary<(string, string), string> GetAllRelatedDataColumnDefinitions()
+        public virtual Dictionary<(string, string), string> GetAllRelatedDataColumnDefinitions()
         {
             var result = new Dictionary<(string, string), string>();
             using (var context = new ScrapperContext())

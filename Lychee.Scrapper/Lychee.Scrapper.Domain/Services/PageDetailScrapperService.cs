@@ -23,7 +23,7 @@ namespace Lychee.Scrapper.Domain.Services
             _resultCollectionService = resultCollectionService;
         }
 
-        public async Task Scrape()
+        public virtual async Task Scrape()
         {
             //Loads the initial page
             var scrappedData = await _scrapper.Scrape();

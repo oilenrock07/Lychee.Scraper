@@ -10,7 +10,7 @@ namespace Lychee.Scrapper.Repository.Repositories
     {
         private List<ScrapeSetting> _settings = null;
 
-        public ICollection<ScrapeSetting> GetAllSettings()
+        public virtual ICollection<ScrapeSetting> GetAllSettings()
         {
             if (_settings != null) return _settings;
             using (var context = new ScrapperContext())
@@ -21,7 +21,7 @@ namespace Lychee.Scrapper.Repository.Repositories
             return _settings;
         }
 
-        public List<ScrapeItemSetting> GetItemSettings(string category)
+        public virtual List<ScrapeItemSetting> GetItemSettings(string category)
         {
             if (_settings == null)
                 GetAllSettings();

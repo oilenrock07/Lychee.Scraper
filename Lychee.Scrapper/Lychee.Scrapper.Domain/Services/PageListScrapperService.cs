@@ -30,7 +30,7 @@ namespace Lychee.Scrapper.Domain.Services
             _pageListPaginationService = pageListPaginationService;
         }
 
-        public async Task Scrape()
+        public virtual async Task Scrape()
         {
             //Loads the initial page
             var scrappedData = await _scrapper.Scrape();

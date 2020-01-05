@@ -16,7 +16,7 @@ namespace Lychee.Scrapper.Domain.Services
             _headerRequestRepository = headerRequestRepository;
         }
 
-        public HtmlDocument GetPage(string url, string method = "GET")
+        public virtual HtmlDocument GetPage(string url, string method = "GET")
         {
             var webQuery = new WebQuery(url)
             {

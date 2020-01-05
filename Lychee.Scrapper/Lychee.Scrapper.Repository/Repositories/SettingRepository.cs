@@ -8,9 +8,9 @@ namespace Lychee.Scrapper.Repository.Repositories
 {
     public class SettingRepository : ISettingRepository
     {
-        private List<Setting> _settings = null;
+        private List<Setting> _settings;
 
-        public ICollection<Setting> GetAllSettings()
+        public virtual ICollection<Setting> GetAllSettings()
         {
             if (_settings != null) return _settings;
             using (var context = new ScrapperContext())
@@ -21,7 +21,7 @@ namespace Lychee.Scrapper.Repository.Repositories
             return _settings;
         }
 
-        public Setting GetSetting(string key)
+        public virtual Setting GetSetting(string key)
         {
             if (_settings == null)
                 GetAllSettings();
@@ -29,7 +29,7 @@ namespace Lychee.Scrapper.Repository.Repositories
             return _settings.FirstOrDefault(x => x.Key == key);
         }
 
-        public T GetSettingValue<T>(string key)
+        public virtual T GetSettingValue<T>(string key)
         {
             if (_settings == null)
                 GetAllSettings();

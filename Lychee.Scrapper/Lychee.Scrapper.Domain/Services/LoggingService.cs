@@ -52,7 +52,7 @@ namespace Lychee.Scrapper.Domain.Services
             return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Logger?.Dispose();
         }

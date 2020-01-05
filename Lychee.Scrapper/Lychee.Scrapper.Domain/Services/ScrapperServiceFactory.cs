@@ -32,7 +32,7 @@ namespace Lychee.Scrapper.Domain.Services
             _webQueryService = webQueryService;
         }
 
-        public IScrapperService GetScrapper()
+        public virtual IScrapperService GetScrapper()
         {
             if (string.Equals(_scrapper, ScrapperType.PageList, StringComparison.InvariantCultureIgnoreCase))
             {

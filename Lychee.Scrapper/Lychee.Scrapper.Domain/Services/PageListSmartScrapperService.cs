@@ -30,7 +30,7 @@ namespace Lychee.Scrapper.Domain.Services
             _pageListPaginationService = pageListPaginationService;
         }
 
-        public async Task ScrapePageList()
+        public virtual async Task ScrapePageList()
         {
             _scrapper.IsFirstPage = true;
             var scrappedData = await _scrapper.Scrape();
@@ -51,7 +51,7 @@ namespace Lychee.Scrapper.Domain.Services
             }
         }
 
-        public void ScrapeOtherPages(int lastPage, IPageListScrapper firstPageScrapper)
+        public virtual void ScrapeOtherPages(int lastPage, IPageListScrapper firstPageScrapper)
         {
             throw new NotImplementedException();
         }
