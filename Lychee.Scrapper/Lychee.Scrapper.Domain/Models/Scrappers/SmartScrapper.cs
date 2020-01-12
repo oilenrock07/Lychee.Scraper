@@ -65,9 +65,9 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
 
                     if (CustomScrappingInstructions?.Any() ?? false)
                     {
-                        await AddScripts(page);
                         foreach (var instruction in CustomScrappingInstructions)
                         {
+                            await AddScripts(page);
                             await instruction.Invoke(page, resultCollection, Parameters);
                         }
                     }
@@ -132,7 +132,18 @@ namespace Lychee.Scrapper.Domain.Models.Scrappers
             {
                 await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/ScrapperFunctions.js"); //add custom scrapper functions
                 await page.AddScriptTagAsync("http://lychee.scrapper.localhost/Scripts/jquery-3.3.1.min.js"); //add jquery for faster searching for element
-            }            
+
+                //await page.EvaluateFunctionAsync(@"(url1, url2) => {
+                //var scriptTag = document.createElement('script');
+                //scriptTag.src = url1;
+
+                //var scriptTag2 = document.createElement('script');
+                //scriptTag2.src = url2;
+
+                //document.body.appendChild(scriptTag);
+                //document.body.appendChild(scriptTag2);}", "http://lychee.scrapper.localhost/Scripts/ScrapperFunctions.js", "http://lychee.scrapper.localhost/Scripts/jquery-3.3.1.min.js");
+
+            }
         }
 
     }

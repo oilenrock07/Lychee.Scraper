@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Lychee.Infrastructure;
 using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 
@@ -14,7 +15,7 @@ namespace Lychee.Scrapper.Repository.Repositories
             if (_headerRequests != null) return _headerRequests;
             using (var context = new ScrapperContext())
             {
-                var repository = new Repository<HeaderRequest>(context, true);
+                var repository = new Repository<HeaderRequest>(context);
                 _headerRequests = repository.GetAll().ToList();
             }
             return _headerRequests;

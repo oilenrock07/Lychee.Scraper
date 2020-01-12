@@ -220,8 +220,9 @@ namespace Lychee.Scrapper.Domain.Helpers
 
                 foreach (var columnDefinition in columnDefinitions)
                 {
-                    entity.GetType().GetProperty(columnDefinition.Key.Item2)?.SetValue(entity,
-                        item.GetType().GetProperty(columnDefinition.Value)?.GetValue(item).ToString(), null);
+                    var value = item.GetType().GetProperty(columnDefinition.Value)?.GetValue(item);
+                    if (value != null)
+                        entity.GetType().GetProperty(columnDefinition.Key.Item2)?.SetValue(entity, value.ToString(), null);
                 }
 
                 entities.Add(entity);
@@ -238,7 +239,9 @@ namespace Lychee.Scrapper.Domain.Helpers
                 var valueDictionary = new Dictionary<string, string>();
                 foreach (var columnDefinition in columnDefinitions)
                 {
-                    valueDictionary.Add(columnDefinition.Key.Item2, item.GetType().GetProperty(columnDefinition.Value)?.GetValue(item).ToString());
+                    var value = item.GetType().GetProperty(columnDefinition.Value)?.GetValue(item);
+                    if (value != null)
+                        valueDictionary.Add(columnDefinition.Key.Item2, value.ToString());
                 }
 
                 entities.Add(item.Identifier, valueDictionary);

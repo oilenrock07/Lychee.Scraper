@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>LycheeScrapper.Domain</id>
-    <version>1.4</version>
+    <version>1.2.4</version>
     <title>Lychee Scrapper Domain</title>
     <authors>Cornelio Cawicaan Jr</authors>
     <owners>Cornelio Cawicaan Jr</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <description>Domain Logic to Scrape Websites</description>
-    <releaseNotes>Dynamically Map the scrapped and related data to the passed object</releaseNotes>
+    <releaseNotes>Change implementation of Access to SQL</releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>Lychee Scrapper Domain</tags>
     <dependencies>

@@ -8,6 +8,7 @@ namespace Lychee.Scrapper.Entities.Entities
     public class ScrappedData
     {
         public int ScrappedDataId { get; set; }
+        public int ProjectId { get; set; }
         public string Identifier { get; set; }
 
         //Strings

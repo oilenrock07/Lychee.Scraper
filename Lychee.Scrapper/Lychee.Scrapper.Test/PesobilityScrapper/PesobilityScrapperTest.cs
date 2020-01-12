@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,6 +51,13 @@ namespace Lychee.Scrapper.Test.MyMoviesScrapper
         }
 
         [Test]
+        public void ConvertInvestagramDateToDateTime()
+        {
+            var strDate = "Jan 03, 2020";
+            var date = Convert.ToDateTime(strDate);
+        }
+
+        [Test]
         public void RecreateTables()
         {
             var resultCollectionService = new ResultCollectionService(new ColumnDefinitionRepository(), new ScrappedDataRepository(), new SettingRepository());
@@ -95,6 +103,58 @@ namespace Lychee.Scrapper.Test.MyMoviesScrapper
             //Act
             var result = await _scrapper.Scrape();
             _resultCollectionService.SaveScrappedData(result);
+        }
+
+        [Test]
+        public async Task ScrapeRealTimeStocks()
+        {
+            //Arrange
+            _scrapper.IsHeadless = false;
+            _scrapper.Url = "https://www.investagrams.com/Stock/RealTimeMonitoring";
+            _scrapper.CustomScrappingInstructions = new List<SmartScrapper.CustomScrapping>
+            {
+                LogIn,
+                ScrapeRealTimeMonitoringData
+            };
+
+            //Act
+            var result = await _scrapper.Scrape();
+        }
+
+        private async Task LogIn(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args)
+        {
+            var resultSelector = ".invest-login__input-holder";
+            await page.WaitForSelectorAsync(resultSelector);
+
+            await page.TypeAsync(".invest-login__input-holder form input[data-ng-model='LoginRequest.Username']", "cawicaancornelio@gmail.com");
+            await page.TypeAsync("input[type='password']", "1234567890a!");
+            await page.ClickAsync("button[data-ng-click='authenticateUser()']");
+            await page.WaitForNavigationAsync();
+        }
+
+        private async Task ScrapeRealTimeMonitoringData(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args)
+        {
+            var resultSelector = "#StockQuoteTable";
+            await page.WaitForSelectorAsync(resultSelector);
+
+            //try to get the table headers
+            var mappings = _scrappedSettingRepository.GetItemSettings("RealTimeMonitoring");
+
+            var dataSelector = "#StockQuoteTable > tbody > tr";
+            var tData = await PuppeteerHelper.GetTableData(page, dataSelector, mappings);
+
+            foreach (JToken link in tData)
+            {
+                resultCollection.Add(new ResultItemCollection
+                {
+                    Key = link["StockCode"].GetValue(),
+                    Items = mappings.Select(x => new ResultItem
+                    {
+                        Name = x.Key,
+                        Value = link[x.Key].GetValue()
+                    }).ToList()
+                });
+            }
         }
 
         private async Task ScrapeStockTable(Page page, ResultCollection<ResultItemCollection> resultCollection, Dictionary<string, object> args = null)

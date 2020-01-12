@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lychee.Infrastructure;
 using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;
 
@@ -8,14 +9,14 @@ namespace Lychee.Scrapper.Repository.Repositories
 {
     public class SettingRepository : ISettingRepository
     {
-        private List<Setting> _settings;
+        protected virtual List<Setting> _settings { get; set; }
 
         public virtual ICollection<Setting> GetAllSettings()
         {
             if (_settings != null) return _settings;
             using (var context = new ScrapperContext())
             {
-                var repository = new Repository<Setting>(context, true);
+                var repository = new Repository<Setting>(context);
                 _settings = repository.GetAll().ToList();
             }
             return _settings;

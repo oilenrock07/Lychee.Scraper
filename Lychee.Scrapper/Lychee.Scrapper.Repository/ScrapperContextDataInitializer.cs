@@ -38,7 +38,7 @@ namespace Lychee.Scrapper.Repository
                 new Setting {Key = "SmartScrapper.Chromium.DownloadPath", Value = @"C:\Cawi\DEV\Lychee\Lychee.Scrapper\CustomChromium", Description = "This is the downloaded path of the Chromium. If the file does not exists, it will automatically be downloaded by the program. However if it already exists, it will just reuse the same files"},
             };
 
-            context.Settings.AddRange(defaultSettings);
+            //context.Settings.AddRange(defaultSettings);
             base.Seed(context);
         }
     }

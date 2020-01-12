@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Lychee.Infrastructure;
 using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository;
 using Lychee.Scrapper.Repository.Repositories;
@@ -120,7 +121,7 @@ namespace Lychee.Scrapper.Test.RepositoryTest
         [Test]
         public void CanGetRelatedDataFromScrappedData()
         {
-            JetEntityFrameworkProvider.JetConnection.ShowSqlStatements = true;
+            //JetEntityFrameworkProvider.JetConnection.ShowSqlStatements = true;
             ScrappedData data;
             List<RelatedData> relatedData;
             using (var context = new ScrapperContext())
