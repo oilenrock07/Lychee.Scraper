@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Lychee.Infrastructure.Interfaces;
 using Lychee.Scrapper.Domain.Interfaces;
 using Lychee.Scrapper.Entities.Entities;
 using Lychee.Scrapper.Repository.Interfaces;

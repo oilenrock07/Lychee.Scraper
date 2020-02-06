@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Lychee.Scrapper.Repository.Interfaces;
+using Lychee.Infrastructure.Interfaces;
 using Serilog.Events;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers

@@ -2,6 +2,7 @@
 using Lychee.Scrapper.Domain.Interfaces;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Lychee.Infrastructure.Interfaces;
 using Lychee.Scrapper.Repository.Interfaces;
 
 namespace Lychee.Scrapper.Domain.Models.Scrappers

@@ -51,7 +51,7 @@
       <HintPath>..\packages\HtmlAgilityPack.1.11.12\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Lychee.Infrastructure, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lychee.Infrastructure.1.1.0\lib\net40\Lychee.Infrastructure.dll</HintPath>
+      <HintPath>..\packages\Lychee.Infrastructure.1.3.0\lib\net40\Lychee.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.0.2\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityMapperTest.cs" />
+    <Compile Include="InvestagramScrapper\InvestagramScrapperTest.cs" />
     <Compile Include="MaxshopScrapper\MaxShopPageListScrapperTest.cs" />
     <Compile Include="MyMoviesScrapper\MyMoviesScrapperTest.cs" />
     <Compile Include="MightyApeScrapper\MightyAppePageListScrapperTest.cs" />
